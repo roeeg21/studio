@@ -19,7 +19,8 @@ const CheckWxResponseSchema = z.object({
 async function fetchFromCheckWx(station: string, reportType: 'metar' | 'taf'): Promise<string> {
     // This is a demo key with limitations. For production, a real key would be needed.
     const apiKey = '0e0a708261b05220a28243a207';
-    const url = `https://api.checkwx.com/${reportType}/${station}/decoded`;
+    // The API expects the station code to be in lowercase.
+    const url = `https://api.checkwx.com/${reportType}/${station.toLowerCase()}/decoded`;
 
     try {
         const response = await fetch(url, {
