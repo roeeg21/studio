@@ -8,12 +8,13 @@ import { Button } from '@/components/ui/button';
 import { Switch } from '@/components/ui/switch';
 import { Separator } from '@/components/ui/separator';
 import { AIRCRAFT_SPECS, STATIONS, LIMITS, KG_TO_LB, GAL_TO_LB } from '@/lib/constants';
-import { User, Fuel, Luggage, Save, FolderOpen, AlertCircle, Droplets } from 'lucide-react';
+import { User, Fuel, Luggage, Save, FolderOpen, AlertCircle, Droplets, ChevronDown } from 'lucide-react';
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { useToast } from '@/hooks/use-toast';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { Alert, AlertDescription } from '@/components/ui/alert';
+import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
 
 type Weights = {
   pilot: number;
@@ -143,7 +144,19 @@ export default function WeightBalanceCard({ onUpdate }: WeightBalanceCardProps) 
     const zeroFuelCg = zeroFuelWeight > 0 ? zeroFuelMoment / zeroFuelWeight : 0;
 
 
-    return { totalWeight, totalCg, isWithinLimits, totalBaggageWeight, landingWeight, landingCg, isLandingWeightOk, zeroFuelWeight, zeroFuelCg };
+    return { 
+        totalWeight, totalCg, isWithinLimits, totalBaggageWeight, landingWeight, landingCg, isLandingWeightOk, zeroFuelWeight, zeroFuelCg,
+        moments: {
+            pilot: pilotMoment,
+            coPilot: coPilotMoment,
+            rearSeats: rearMoment,
+            fuel: fuelMoment,
+            baggageA: baggageAMoment,
+            baggageB: baggageBMoment,
+            baggageC: baggageCMoment,
+            total: totalMoment,
+        }
+    };
   }, [weights, plannedFuelBurnGal]);
 
   useEffect(() => {
@@ -263,6 +276,26 @@ export default function WeightBalanceCard({ onUpdate }: WeightBalanceCardProps) 
             </div>
         </div>
 
+        <Accordion type="single" collapsible className="w-full">
+          <AccordionItem value="item-1">
+            <AccordionTrigger className="text-sm font-medium">Show Calculations</AccordionTrigger>
+            <AccordionContent>
+              <div className="space-y-2 pt-2 text-sm text-muted-foreground">
+                 <CalculationRow label="Empty Weight Moment" value={AIRCRAFT_SPECS.emptyMoment.toFixed(2)} />
+                 <CalculationRow label="Pilot Moment" value={calculation.moments.pilot.toFixed(2)} />
+                 <CalculationRow label="Co-Pilot Moment" value={calculation.moments.coPilot.toFixed(2)} />
+                 <CalculationRow label="Rear Passengers Moment" value={calculation.moments.rearSeats.toFixed(2)} />
+                 <CalculationRow label="Fuel Moment" value={calculation.moments.fuel.toFixed(2)} />
+                 <CalculationRow label="Baggage A Moment" value={calculation.moments.baggageA.toFixed(2)} />
+                 <CalculationRow label="Baggage B Moment" value={calculation.moments.baggageB.toFixed(2)} />
+                 <CalculationRow label="Baggage C Moment" value={calculation.moments.baggageC.toFixed(2)} />
+                 <Separator className="my-2"/>
+                 <CalculationRow label="Total Moment" value={calculation.moments.total.toFixed(2)} isBold={true} />
+              </div>
+            </AccordionContent>
+          </AccordionItem>
+        </Accordion>
+
       </CardContent>
       <CardFooter className="flex gap-2">
         <Dialog open={isSaveOpen} onOpenChange={setSaveOpen}>
@@ -316,6 +349,16 @@ function WeightInput({ icon: Icon, label, value, onChange, unit, max }: { icon: 
           <PopoverContent className="w-auto p-2 text-xs">Max allowable {unit === 'gal' ? 'fuel' : 'weight'} for this station.</PopoverContent>
         </Popover>
       )}
+    </div>
+  );
+}
+
+// Sub-component for calculation rows
+function CalculationRow({ label, value, isBold = false }: { label: string, value: string, isBold?: boolean }) {
+  return (
+    <div className={`flex justify-between items-center ${isBold ? 'font-semibold text-foreground' : ''}`}>
+      <p>{label}</p>
+      <p>{value} lb-in</p>
     </div>
   );
 }
