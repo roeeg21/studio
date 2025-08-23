@@ -1,3 +1,4 @@
+
 'use client';
 
 import { useState, useEffect } from 'react';
@@ -56,6 +57,9 @@ function WeatherInfo({ airportId, airport }: { airportId: string; airport: Airpo
     }
     fetchAndTranslateWeather();
   }, [airportId]);
+  
+  const metarCategory = weatherData?.metar && weatherData.metar !== 'N/A' && weatherData.metar !== 'Error loading data.' ? getFlightCategory(weatherData.metar) : null;
+  const tafCategory = weatherData?.taf && weatherData.taf !== 'N/A' && weatherData.taf !== 'Error loading data.' ? getFlightCategory(weatherData.taf) : null;
 
   if (loading) {
     return (
@@ -71,10 +75,6 @@ function WeatherInfo({ airportId, airport }: { airportId: string; airport: Airpo
   if (!weatherData) {
     return <p>Could not load weather data.</p>;
   }
-  
-  const metarCategory = weatherData.metar && weatherData.metar !== 'N/A' && weatherData.metar !== 'Error loading data.' ? getFlightCategory(weatherData.metar) : null;
-  const tafCategory = weatherData.taf && weatherData.taf !== 'N/A' && weatherData.taf !== 'Error loading data.' ? getFlightCategory(weatherData.taf) : null;
-
 
   return (
     <div className="space-y-4">
@@ -88,10 +88,9 @@ function WeatherInfo({ airportId, airport }: { airportId: string; airport: Airpo
                     <p className="font-mono text-sm font-semibold">METAR</p>
                     {metarCategory && <Badge className={cn('text-white', categoryStyles[metarCategory])}>{metarCategory}</Badge>}
                 </div>
-                <p className="font-mono text-xs break-words">{weatherData.metar}</p>
             </div>
         </div>
-        {translatedMetar && <WeatherTranslationDisplay weather={translatedMetar} />}
+        {translatedMetar ? <WeatherTranslationDisplay weather={translatedMetar} /> : <p className="text-sm text-muted-foreground">METAR data not available.</p>}
       </div>
       
       {/* TAF */}
@@ -103,10 +102,9 @@ function WeatherInfo({ airportId, airport }: { airportId: string; airport: Airpo
                     <p className="font-mono text-sm font-semibold">TAF</p>
                     {tafCategory && <Badge className={cn('text-white', categoryStyles[tafCategory])}>{tafCategory}</Badge>}
                 </div>
-                <p className="font-mono text-xs break-words">{weatherData.taf}</p>
             </div>
         </div>
-         {translatedTaf && <WeatherTranslationDisplay weather={translatedTaf} />}
+         {translatedTaf ? <WeatherTranslationDisplay weather={translatedTaf} /> : <p className="text-sm text-muted-foreground">TAF data not available.</p>}
       </div>
       
       {/* Frequencies */}
