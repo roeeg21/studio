@@ -1,6 +1,7 @@
 // src/lib/constants.ts
 
 export const KG_TO_LB = 2.20462;
+export const GAL_TO_LB = 6;
 
 export const AIRCRAFT_SPECS = {
   emptyWeight: 2019, // lbs
@@ -14,7 +15,7 @@ export const STATIONS = {
   pilot: { arm: 37, label: 'Pilot' },
   coPilot: { arm: 37, label: 'Co-pilot' },
   rearSeats: { arm: 73, label: 'Rear Passengers' },
-  fuel: { arm: 48, label: 'Fuel (87 gal usable)' }, // Usable fuel
+  fuel: { arm: 48, label: 'Fuel' }, // Label updated
   baggageA: { arm: 95, label: 'Baggage Area A' },
   baggageB: { arm: 108, label: 'Baggage Area B' },
   baggageC: { arm: 120, label: 'Baggage Area C' },
@@ -28,7 +29,7 @@ export const LIMITS = {
   totalBaggageMax: 120, // lbs
   fuelMaxGal: 87, // gallons usable
   get fuelMaxLbs() {
-    return this.fuelMaxGal * 6; // 6 lbs/gal
+    return this.fuelMaxGal * GAL_TO_LB;
   },
 };
 
@@ -78,3 +79,5 @@ export const AIRPORT_DATA = {
     ],
   },
 };
+
+    

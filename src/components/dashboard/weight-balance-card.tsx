@@ -7,7 +7,7 @@ import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Switch } from '@/components/ui/switch';
 import { Separator } from '@/components/ui/separator';
-import { AIRCRAFT_SPECS, STATIONS, LIMITS, KG_TO_LB, CG_ENVELOPE } from '@/lib/constants';
+import { AIRCRAFT_SPECS, STATIONS, LIMITS, KG_TO_LB, CG_ENVELOPE, GAL_TO_LB } from '@/lib/constants';
 import { User, Fuel, Luggage, Save, FolderOpen, AlertCircle } from 'lucide-react';
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
@@ -63,6 +63,7 @@ const isCgWithinEnvelope = (weight: number, cg: number): boolean => {
 export default function WeightBalanceCard({ onUpdate }: WeightBalanceCardProps) {
   const [isKg, setIsKg] = useState(false);
   const [weights, setWeights] = useState<Weights>({ pilot: 0, coPilot: 0, rearSeats: 0, fuel: 0, baggageA: 0, baggageB: 0, baggageC: 0 });
+  const [fuelGal, setFuelGal] = useState('');
   const [profiles, setProfiles] = useState<Profile[]>([]);
   const [profileName, setProfileName] = useState('');
   const [isSaveOpen, setSaveOpen] = useState(false);
@@ -84,6 +85,12 @@ export default function WeightBalanceCard({ onUpdate }: WeightBalanceCardProps) 
     const numericValue = parseFloat(value) || 0;
     const valueInLbs = isKg ? numericValue * KG_TO_LB : numericValue;
     setWeights(prev => ({ ...prev, [name]: valueInLbs }));
+  };
+  
+  const handleFuelChange = (value: string) => {
+    setFuelGal(value);
+    const numericValue = parseFloat(value) || 0;
+    setWeights(prev => ({ ...prev, fuel: numericValue * GAL_TO_LB }));
   };
 
   const getDisplayValue = (lbs: number) => {
@@ -149,6 +156,8 @@ export default function WeightBalanceCard({ onUpdate }: WeightBalanceCardProps) 
       }
 
       setWeights(loadedWeights);
+      setFuelGal((loadedWeights.fuel / GAL_TO_LB).toFixed(1));
+
       toast({ title: "Success", description: `Profile "${name}" loaded.` });
       setLoadOpen(false);
     }
@@ -173,10 +182,10 @@ export default function WeightBalanceCard({ onUpdate }: WeightBalanceCardProps) 
         <WeightInput icon={User} label={STATIONS.pilot.label} value={getDisplayValue(weights.pilot)} onChange={e => handleWeightChange('pilot', e.target.value)} unit={unitLabel} />
         <WeightInput icon={User} label={STATIONS.coPilot.label} value={getDisplayValue(weights.coPilot)} onChange={e => handleWeightChange('coPilot', e.target.value)} unit={unitLabel} />
         <WeightInput icon={User} label={STATIONS.rearSeats.label} value={getDisplayValue(weights.rearSeats)} onChange={e => handleWeightChange('rearSeats', e.target.value)} unit={unitLabel} />
-        <WeightInput icon={Fuel} label={STATIONS.fuel.label} value={getDisplayValue(weights.fuel)} onChange={e => handleWeightChange('fuel', e.target.value)} unit={unitLabel} max={LIMITS.fuelMaxLbs} isKg={isKg} />
-        <WeightInput icon={Luggage} label={STATIONS.baggageA.label} value={getDisplayValue(weights.baggageA)} onChange={e => handleWeightChange('baggageA', e.target.value)} unit={unitLabel} max={LIMITS.baggageAMax} isKg={isKg} />
-        <WeightInput icon={Luggage} label={STATIONS.baggageB.label} value={getDisplayValue(weights.baggageB)} onChange={e => handleWeightChange('baggageB', e.target.value)} unit={unitLabel} max={LIMITS.baggageBMax} isKg={isKg} />
-        <WeightInput icon={Luggage} label={STATIONS.baggageC.label} value={getDisplayValue(weights.baggageC)} onChange={e => handleWeightChange('baggageC', e.target.value)} unit={unitLabel} max={LIMITS.baggageCMax} isKg={isKg} />
+        <WeightInput icon={Fuel} label={STATIONS.fuel.label} value={fuelGal} onChange={e => handleFuelChange(e.target.value)} unit="gal" max={LIMITS.fuelMaxGal} />
+        <WeightInput icon={Luggage} label={STATIONS.baggageA.label} value={getDisplayValue(weights.baggageA)} onChange={e => handleWeightChange('baggageA', e.target.value)} unit={unitLabel} />
+        <WeightInput icon={Luggage} label={STATIONS.baggageB.label} value={getDisplayValue(weights.baggageB)} onChange={e => handleWeightChange('baggageB', e.target.value)} unit={unitLabel} />
+        <WeightInput icon={Luggage} label={STATIONS.baggageC.label} value={getDisplayValue(weights.baggageC)} onChange={e => handleWeightChange('baggageC', e.target.value)} unit={unitLabel} />
         
         <Separator />
 
@@ -227,9 +236,8 @@ export default function WeightBalanceCard({ onUpdate }: WeightBalanceCardProps) 
 }
 
 // Sub-component for inputs
-function WeightInput({ icon: Icon, label, value, onChange, unit, max, isKg }: { icon: React.ElementType, label: string, value: string, onChange: (e: React.ChangeEvent<HTMLInputElement>) => void, unit: string, max?: number, isKg?: boolean }) {
-  const displayMax = max && (isKg ? max / KG_TO_LB : max).toFixed(1);
-  const hasWarning = max && parseFloat(value) > parseFloat(displayMax || '0');
+function WeightInput({ icon: Icon, label, value, onChange, unit, max }: { icon: React.ElementType, label: string, value: string, onChange: (e: React.ChangeEvent<HTMLInputElement>) => void, unit: string, max?: number }) {
+  const hasWarning = max && parseFloat(value) > max;
 
   return (
     <div className="grid grid-cols-3 items-center gap-4">
@@ -245,12 +253,14 @@ function WeightInput({ icon: Icon, label, value, onChange, unit, max, isKg }: { 
         <Popover>
           <PopoverTrigger asChild>
             <p className={`col-start-2 col-span-2 text-xs text-muted-foreground cursor-pointer hover:text-foreground ${hasWarning ? 'text-destructive font-semibold' : ''}`}>
-              Limit: {displayMax} {unit}
+              Limit: {max} {unit}
             </p>
           </PopoverTrigger>
-          <PopoverContent className="w-auto p-2 text-xs">Max allowable weight for this station.</PopoverContent>
+          <PopoverContent className="w-auto p-2 text-xs">Max allowable {unit === 'gal' ? 'fuel' : 'weight'} for this station.</PopoverContent>
         </Popover>
       )}
     </div>
   );
 }
+
+    
