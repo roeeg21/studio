@@ -16,12 +16,14 @@ export const STATIONS = {
   fuel: { arm: 48, label: 'Fuel (87 gal usable)' }, // Usable fuel
   baggageA: { arm: 95, label: 'Baggage Area A' },
   baggageB: { arm: 108, label: 'Baggage Area B' },
+  baggageC: { arm: 120, label: 'Baggage Area C' },
 };
 
 export const LIMITS = {
   maxWeight: 3100, // lbs
   baggageAMax: 120, // lbs
   baggageBMax: 50, // lbs
+  baggageCMax: 80, // lbs
   totalBaggageMax: 120, // lbs
   fuelMaxGal: 87, // gallons usable
   get fuelMaxLbs() {

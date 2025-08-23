@@ -20,6 +20,7 @@ type Weights = {
   fuel: number;
   baggageA: number;
   baggageB: number;
+  baggageC: number;
 };
 
 export type WeightAndBalanceReport = {
@@ -60,7 +61,7 @@ const isCgWithinEnvelope = (weight: number, cg: number): boolean => {
 
 export default function WeightBalanceCard({ onUpdate }: WeightBalanceCardProps) {
   const [isKg, setIsKg] = useState(false);
-  const [weights, setWeights] = useState<Weights>({ frontSeats: 0, rearSeats: 0, fuel: 0, baggageA: 0, baggageB: 0 });
+  const [weights, setWeights] = useState<Weights>({ frontSeats: 0, rearSeats: 0, fuel: 0, baggageA: 0, baggageB: 0, baggageC: 0 });
   const [profiles, setProfiles] = useState<Profile[]>([]);
   const [profileName, setProfileName] = useState('');
   const [isSaveOpen, setSaveOpen] = useState(false);
@@ -95,10 +96,11 @@ export default function WeightBalanceCard({ onUpdate }: WeightBalanceCardProps) 
     const fuelMoment = weights.fuel * STATIONS.fuel.arm;
     const baggageAMoment = weights.baggageA * STATIONS.baggageA.arm;
     const baggageBMoment = weights.baggageB * STATIONS.baggageB.arm;
+    const baggageCMoment = weights.baggageC * STATIONS.baggageC.arm;
 
-    const totalPayloadWeight = weights.frontSeats + weights.rearSeats + weights.fuel + weights.baggageA + weights.baggageB;
+    const totalPayloadWeight = weights.frontSeats + weights.rearSeats + weights.fuel + weights.baggageA + weights.baggageB + weights.baggageC;
     const totalWeight = AIRCRAFT_SPECS.emptyWeight + totalPayloadWeight;
-    const totalMoment = AIRCRAFT_SPECS.emptyMoment + frontMoment + rearMoment + fuelMoment + baggageAMoment + baggageBMoment;
+    const totalMoment = AIRCRAFT_SPECS.emptyMoment + frontMoment + rearMoment + fuelMoment + baggageAMoment + baggageBMoment + baggageCMoment;
     const totalCg = totalWeight > 0 ? totalMoment / totalWeight : AIRCRAFT_SPECS.emptyCg;
 
     const isWithinLimits = isCgWithinEnvelope(totalWeight, totalCg);
@@ -154,6 +156,7 @@ export default function WeightBalanceCard({ onUpdate }: WeightBalanceCardProps) 
         <WeightInput icon={Fuel} label={STATIONS.fuel.label} value={getDisplayValue(weights.fuel)} onChange={e => handleWeightChange('fuel', e.target.value)} unit={unitLabel} max={LIMITS.fuelMaxLbs} isKg={isKg} />
         <WeightInput icon={Luggage} label={STATIONS.baggageA.label} value={getDisplayValue(weights.baggageA)} onChange={e => handleWeightChange('baggageA', e.target.value)} unit={unitLabel} max={LIMITS.baggageAMax} isKg={isKg} />
         <WeightInput icon={Luggage} label={STATIONS.baggageB.label} value={getDisplayValue(weights.baggageB)} onChange={e => handleWeightChange('baggageB', e.target.value)} unit={unitLabel} max={LIMITS.baggageBMax} isKg={isKg} />
+        <WeightInput icon={Luggage} label={STATIONS.baggageC.label} value={getDisplayValue(weights.baggageC)} onChange={e => handleWeightChange('baggageC', e.target.value)} unit={unitLabel} max={LIMITS.baggageCMax} isKg={isKg} />
         
         <Separator />
 

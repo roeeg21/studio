@@ -5,7 +5,6 @@ import type { WeightAndBalanceReport } from '@/components/dashboard/weight-balan
 import WeightBalanceCard from '@/components/dashboard/weight-balance-card';
 import CgEnvelopeChart from '@/components/dashboard/cg-envelope-chart';
 import AeroDataCard from '@/components/dashboard/aero-data-card';
-import WeightOptimizationCard from '@/components/dashboard/weight-optimization-card';
 import { AIRCRAFT_SPECS } from '@/lib/constants';
 
 const initialWbReport: WeightAndBalanceReport = {
@@ -17,6 +16,7 @@ const initialWbReport: WeightAndBalanceReport = {
     fuel: 0,
     baggageA: 0,
     baggageB: 0,
+    baggageC: 0,
   },
   isWithinLimits: true,
 };
@@ -38,7 +38,6 @@ export default function DashboardClient() {
           />
         </div>
         <div className="grid gap-4 md:grid-cols-2 md:gap-8">
-          <WeightOptimizationCard wbReport={wbReport} />
           <AeroDataCard />
         </div>
       </div>
