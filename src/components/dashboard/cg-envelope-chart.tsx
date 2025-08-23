@@ -1,6 +1,6 @@
 'use client';
 
-import { AreaChart, CartesianGrid, ReferenceDot, ResponsiveContainer, XAxis, YAxis, Line, ReferenceLine } from 'recharts';
+import { ComposedChart, CartesianGrid, ReferenceDot, ResponsiveContainer, XAxis, YAxis, Line, ReferenceLine } from 'recharts';
 import { ChartContainer, ChartTooltip, ChartTooltipContent } from '@/components/ui/chart';
 import { CG_ENVELOPE, LIMITS, AIRCRAFT_SPECS } from '@/lib/constants';
 
@@ -19,7 +19,7 @@ export default function CgEnvelopeChart({ totalWeight, totalCg, landingWeight, l
   const chartConfig = {
     envelope: {
       label: "Safe Envelope",
-      color: "hsl(var(--chart-1))",
+      color: "hsl(var(--destructive))",
     },
     current: {
       label: "Current CG",
@@ -33,7 +33,6 @@ export default function CgEnvelopeChart({ totalWeight, totalCg, landingWeight, l
   const domainX: [number, number] = [32, 48];
   const domainY: [number, number] = [1800, 3200];
 
-
   return (
     <>
       <h3 className="text-lg font-semibold">Center of Gravity Limits</h3>
@@ -42,7 +41,7 @@ export default function CgEnvelopeChart({ totalWeight, totalCg, landingWeight, l
       </p>
       <div className="h-80">
         <ChartContainer config={chartConfig} className="h-full w-full">
-          <AreaChart
+          <ComposedChart
             accessibilityLayer
             data={CG_ENVELOPE}
             margin={{
@@ -62,7 +61,6 @@ export default function CgEnvelopeChart({ totalWeight, totalCg, landingWeight, l
               tickFormatter={(value) => value.toString()}
               axisLine={{ stroke: 'hsl(var(--foreground))' }}
               tickLine={{ stroke: 'hsl(var(--foreground))' }}
-              
             />
             <YAxis
               dataKey="weight"
@@ -77,6 +75,7 @@ export default function CgEnvelopeChart({ totalWeight, totalCg, landingWeight, l
             <ChartTooltip cursor={false} content={<ChartTooltipContent indicator="line" labelKey="weight" />} />
             
             <Line
+                data={CG_ENVELOPE}
                 dataKey="weight"
                 type="linear"
                 stroke="hsl(var(--destructive))"
@@ -111,7 +110,7 @@ export default function CgEnvelopeChart({ totalWeight, totalCg, landingWeight, l
                 ifOverflow="extendDomain"
               />
             )}
-          </AreaChart>
+          </ComposedChart>
         </ChartContainer>
       </div>
     </>
