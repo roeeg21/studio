@@ -208,7 +208,7 @@ export default function WeightBalanceCard({ onUpdate }: WeightBalanceCardProps) 
 
         {/* Totals */}
         <div className="space-y-2 pt-2">
-            <div className={`flex justify-between items-center font-medium ${calculation.totalWeight > 3000 ? 'text-destructive' : ''}`}>
+            <div className={`flex justify-between items-center font-medium ${calculation.totalWeight > LIMITS.maxWeight ? 'text-destructive' : ''}`}>
                 <p>Total Weight</p>
                 <div className="flex items-center gap-2">
                   {calculation.totalWeight > LIMITS.maxWeight && <AlertCircle className="h-4 w-4" />}
