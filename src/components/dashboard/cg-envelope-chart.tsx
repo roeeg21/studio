@@ -1,6 +1,6 @@
 'use client';
 
-import { Area, AreaChart, CartesianGrid, ReferenceDot, ResponsiveContainer, Tooltip, XAxis, YAxis, Line, ReferenceLine } from 'recharts';
+import { AreaChart, CartesianGrid, ReferenceDot, ResponsiveContainer, XAxis, YAxis, Line, ReferenceLine } from 'recharts';
 import { ChartContainer, ChartTooltip, ChartTooltipContent } from '@/components/ui/chart';
 import { CG_ENVELOPE, LIMITS, AIRCRAFT_SPECS } from '@/lib/constants';
 
