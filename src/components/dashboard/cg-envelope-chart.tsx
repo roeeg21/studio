@@ -9,12 +9,15 @@ type CgEnvelopeChartProps = {
   totalCg: number;
   landingWeight: number;
   landingCg: number;
+  zeroFuelWeight: number;
+  zeroFuelCg: number;
   isWithinLimits: boolean;
 };
 
-export default function CgEnvelopeChart({ totalWeight, totalCg, landingWeight, landingCg, isWithinLimits }: CgEnvelopeChartProps) {
+export default function CgEnvelopeChart({ totalWeight, totalCg, landingWeight, landingCg, zeroFuelWeight, zeroFuelCg, isWithinLimits }: CgEnvelopeChartProps) {
   const statusColor = isWithinLimits ? 'hsl(var(--chart-1))' : 'hsl(var(--destructive))';
   const landingStatusColor = 'hsl(var(--chart-2))';
+  const zeroFuelStatusColor = 'hsl(var(--chart-4))';
 
   const chartConfig = {
     envelope: {
@@ -22,11 +25,16 @@ export default function CgEnvelopeChart({ totalWeight, totalCg, landingWeight, l
       color: "hsl(var(--destructive))",
     },
     current: {
-      label: "Current CG",
+      label: "Takeoff CG",
+      color: statusColor,
     },
     landing: {
-        label: "Max Landing Weight",
-        color: "hsl(var(--chart-2))",
+        label: "Landing CG",
+        color: landingStatusColor,
+    },
+    zeroFuel: {
+        label: "Zero Fuel CG",
+        color: zeroFuelStatusColor,
     }
   };
 
@@ -110,9 +118,23 @@ export default function CgEnvelopeChart({ totalWeight, totalCg, landingWeight, l
                 ifOverflow="extendDomain"
               />
             )}
+            
+            {zeroFuelWeight > AIRCRAFT_SPECS.emptyWeight && zeroFuelCg > 0 && (
+                <ReferenceDot
+                    x={zeroFuelCg}
+                    y={zeroFuelWeight}
+                    r={8}
+                    fill={zeroFuelStatusColor}
+                    stroke="hsl(var(--background))"
+                    strokeWidth={2}
+                    ifOverflow="extendDomain"
+                />
+            )}
           </ComposedChart>
         </ChartContainer>
       </div>
     </>
   );
 }
+
+    

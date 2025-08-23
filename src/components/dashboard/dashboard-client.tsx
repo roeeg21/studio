@@ -12,6 +12,8 @@ const initialWbReport: WeightAndBalanceReport = {
   totalCg: AIRCRAFT_SPECS.emptyCg,
   landingWeight: 0,
   landingCg: 0,
+  zeroFuelWeight: 0,
+  zeroFuelCg: 0,
   weights: {
     pilot: 0,
     coPilot: 0,
@@ -40,6 +42,8 @@ export default function DashboardClient() {
             totalCg={wbReport.totalCg}
             landingWeight={wbReport.landingWeight}
             landingCg={wbReport.landingCg}
+            zeroFuelWeight={wbReport.zeroFuelWeight}
+            zeroFuelCg={wbReport.zeroFuelCg}
             isWithinLimits={wbReport.isWithinLimits}
           />
         </div>

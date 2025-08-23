@@ -30,6 +30,8 @@ export type WeightAndBalanceReport = {
   totalCg: number;
   landingWeight: number;
   landingCg: number;
+  zeroFuelWeight: number;
+  zeroFuelCg: number;
   weights: Weights;
   isWithinLimits: boolean;
   isLandingWeightOk: boolean;
@@ -140,8 +142,13 @@ export default function WeightBalanceCard({ onUpdate }: WeightBalanceCardProps) 
     const landingCg = landingWeight > 0 ? landingMoment / landingWeight : 0;
     const isLandingWeightOk = landingWeight <= LIMITS.maxLandingWeight;
 
+    // Zero Fuel Calculation
+    const zeroFuelWeight = totalWeight - weights.fuel;
+    const zeroFuelMoment = totalMoment - fuelMoment;
+    const zeroFuelCg = zeroFuelWeight > 0 ? zeroFuelMoment / zeroFuelWeight : 0;
 
-    return { totalWeight, totalCg, isWithinLimits, totalBaggageWeight, landingWeight, landingCg, isLandingWeightOk };
+
+    return { totalWeight, totalCg, isWithinLimits, totalBaggageWeight, landingWeight, landingCg, isLandingWeightOk, zeroFuelWeight, zeroFuelCg };
   }, [weights, plannedFuelBurnGal]);
 
   useEffect(() => {
@@ -150,6 +157,8 @@ export default function WeightBalanceCard({ onUpdate }: WeightBalanceCardProps) 
       totalCg: calculation.totalCg,
       landingWeight: calculation.landingWeight,
       landingCg: calculation.landingCg,
+      zeroFuelWeight: calculation.zeroFuelWeight,
+      zeroFuelCg: calculation.zeroFuelCg,
       weights: weights,
       isWithinLimits: calculation.isWithinLimits,
       isLandingWeightOk: calculation.isLandingWeightOk,
@@ -315,3 +324,5 @@ function WeightInput({ icon: Icon, label, value, onChange, unit, max }: { icon: 
     </div>
   );
 }
+
+    
