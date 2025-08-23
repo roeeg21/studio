@@ -7,40 +7,37 @@ import { CG_ENVELOPE, LIMITS, AIRCRAFT_SPECS } from '@/lib/constants';
 type CgEnvelopeChartProps = {
   totalWeight: number;
   totalCg: number;
-  landingWeight: number;
-  landingCg: number;
   zeroFuelWeight: number;
   zeroFuelCg: number;
   isWithinLimits: boolean;
 };
 
-export default function CgEnvelopeChart({ totalWeight, totalCg, landingWeight, landingCg, zeroFuelWeight, zeroFuelCg, isWithinLimits }: CgEnvelopeChartProps) {
-  const statusColor = isWithinLimits ? 'hsl(var(--chart-1))' : 'hsl(var(--destructive))';
-  const landingStatusColor = 'hsl(var(--chart-2))';
-  const zeroFuelStatusColor = 'hsl(var(--chart-4))';
+export default function CgEnvelopeChart({ totalWeight, totalCg, zeroFuelWeight, zeroFuelCg, isWithinLimits }: CgEnvelopeChartProps) {
+  const takeoffStatusColor = isWithinLimits ? 'hsl(var(--chart-1))' : 'hsl(var(--destructive))';
+  const zeroFuelStatusColor = 'hsl(var(--destructive))';
 
   const chartConfig = {
     envelope: {
       label: "Safe Envelope",
       color: "hsl(var(--destructive))",
     },
-    current: {
+    takeoff: {
       label: "Takeoff CG",
-      color: statusColor,
-    },
-    landing: {
-        label: "Landing CG",
-        color: landingStatusColor,
+      color: 'hsl(142.1 76.2% 41%)', // Green
     },
     zeroFuel: {
         label: "Zero Fuel CG",
-        color: zeroFuelStatusColor,
+        color: 'hsl(0 84.2% 60.2%)', // Red
     }
   };
 
-  // Updated domains to match the new envelope
   const domainX: [number, number] = [34, 48];
   const domainY: [number, number] = [1800, 3200];
+  
+  const fuelBurnLineData = (totalWeight > AIRCRAFT_SPECS.emptyWeight && zeroFuelWeight > AIRCRAFT_SPECS.emptyWeight)
+    ? [{ cg: totalCg, weight: totalWeight }, { cg: zeroFuelCg, weight: zeroFuelWeight }]
+    : [];
+
 
   return (
     <>
@@ -94,26 +91,25 @@ export default function CgEnvelopeChart({ totalWeight, totalCg, landingWeight, l
             />
 
             <ReferenceLine y={LIMITS.maxLandingWeight} stroke="hsl(var(--chart-2))" strokeDasharray="4 4" label={{ value: 'Max Landing Weight', position: 'insideBottomRight', fill: 'hsl(var(--foreground))', fontSize: 12 }} />
-            {/* The No Autopilot zone is not standard on the 2000 model POH, so it has been removed. */}
+
+            {/* Line connecting takeoff and zero-fuel points */}
+            <Line
+                data={fuelBurnLineData}
+                dataKey="weight"
+                type="linear"
+                stroke="hsl(var(--foreground))"
+                strokeDasharray="5 5"
+                strokeWidth={1}
+                dot={false}
+                activeDot={false}
+            />
 
             {totalWeight > AIRCRAFT_SPECS.emptyWeight && (
               <ReferenceDot
                 x={totalCg}
                 y={totalWeight}
                 r={8}
-                fill={statusColor}
-                stroke="hsl(var(--background))"
-                strokeWidth={2}
-                ifOverflow="extendDomain"
-              />
-            )}
-            
-            {landingWeight > AIRCRAFT_SPECS.emptyWeight && landingCg > 0 && (
-              <ReferenceDot
-                x={landingCg}
-                y={landingWeight}
-                r={8}
-                fill={landingStatusColor}
+                fill={isWithinLimits ? chartConfig.takeoff.color : chartConfig.zeroFuel.color}
                 stroke="hsl(var(--background))"
                 strokeWidth={2}
                 ifOverflow="extendDomain"
@@ -125,7 +121,7 @@ export default function CgEnvelopeChart({ totalWeight, totalCg, landingWeight, l
                     x={zeroFuelCg}
                     y={zeroFuelWeight}
                     r={8}
-                    fill={zeroFuelStatusColor}
+                    fill={chartConfig.zeroFuel.color}
                     stroke="hsl(var(--background))"
                     strokeWidth={2}
                     ifOverflow="extendDomain"

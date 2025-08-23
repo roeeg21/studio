@@ -40,8 +40,6 @@ export default function DashboardClient() {
           <CgEnvelopeChart
             totalWeight={wbReport.totalWeight}
             totalCg={wbReport.totalCg}
-            landingWeight={wbReport.landingWeight}
-            landingCg={wbReport.landingCg}
             zeroFuelWeight={wbReport.zeroFuelWeight}
             zeroFuelCg={wbReport.zeroFuelCg}
             isWithinLimits={wbReport.isWithinLimits}
@@ -54,5 +52,3 @@ export default function DashboardClient() {
     </div>
   );
 }
-
-    
