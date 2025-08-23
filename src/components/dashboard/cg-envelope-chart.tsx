@@ -38,7 +38,8 @@ export default function CgEnvelopeChart({ totalWeight, totalCg, landingWeight, l
     }
   };
 
-  const domainX: [number, number] = [32, 48];
+  // Updated domains to match the new envelope
+  const domainX: [number, number] = [34, 48];
   const domainY: [number, number] = [1800, 3200];
 
   return (
@@ -65,7 +66,7 @@ export default function CgEnvelopeChart({ totalWeight, totalCg, landingWeight, l
               type="number"
               domain={domainX}
               label={{ value: 'CG (in)', position: 'bottom', offset: 10 }}
-              tickCount={17}
+              tickCount={15}
               tickFormatter={(value) => value.toString()}
               axisLine={{ stroke: 'hsl(var(--foreground))' }}
               tickLine={{ stroke: 'hsl(var(--foreground))' }}
@@ -93,7 +94,7 @@ export default function CgEnvelopeChart({ totalWeight, totalCg, landingWeight, l
             />
 
             <ReferenceLine y={LIMITS.maxLandingWeight} stroke="hsl(var(--chart-2))" strokeDasharray="4 4" label={{ value: 'Max Landing Weight', position: 'insideBottomRight', fill: 'hsl(var(--foreground))', fontSize: 12 }} />
-            <ReferenceLine x={34} y1={1950} y2={2400} stroke="hsl(var(--chart-3))" strokeDasharray="4 4" label={{ value: 'No Autopilot', position: 'insideTopLeft', fill: 'hsl(var(--foreground))', fontSize: 12, angle: -90, offset: 10 }}/>
+            {/* The No Autopilot zone is not standard on the 2000 model POH, so it has been removed. */}
 
             {totalWeight > AIRCRAFT_SPECS.emptyWeight && (
               <ReferenceDot
@@ -136,5 +137,3 @@ export default function CgEnvelopeChart({ totalWeight, totalCg, landingWeight, l
     </>
   );
 }
-
-    

@@ -46,24 +46,19 @@ type Profile = {
   weights: Weights;
 };
 
+// This function now correctly reflects the sloped forward limit from the 2000 POH.
 const isCgWithinEnvelope = (weight: number, cg: number): boolean => {
   if (weight < AIRCRAFT_SPECS.emptyWeight || weight > LIMITS.maxWeight) return false;
 
-  const aftLimit = 46.0;
+  const aftLimit = 47.0;
   if (cg > aftLimit) return false;
 
   let forwardLimit = 0;
-  if (weight <= 2250) {
-    forwardLimit = 33.0;
-  } else if (weight > 2250 && weight <= 2400) {
-    // Linear interpolation between (2250, 33.0) and (2400, 34.0)
-    forwardLimit = 33.0 + ((weight - 2250) / (2400 - 2250)) * (34.0 - 33.0);
-  } else if (weight > 2400 && weight <= 2700) {
-    // Linear interpolation between (2400, 34.0) and (2700, 36.0)
-    forwardLimit = 34.0 + ((weight - 2400) / (2700 - 2400)) * (36.0 - 34.0);
-  } else if (weight > 2700 && weight <= 3100) {
-    // Linear interpolation between (2700, 36.0) and (3100, 41.0)
-    forwardLimit = 36.0 + ((weight - 2700) / (3100 - 2700)) * (41.0 - 36.0);
+  if (weight <= 2300) {
+    forwardLimit = 35.0;
+  } else if (weight > 2300 && weight <= 3100) {
+    // Linear interpolation between (2300, 35.0) and (3100, 40.5)
+    forwardLimit = 35.0 + ((weight - 2300) / (3100 - 2300)) * (40.5 - 35.0);
   } else {
     // This case handles weights above maxWeight, which should be caught by the first check.
     return false;
@@ -324,5 +319,3 @@ function WeightInput({ icon: Icon, label, value, onChange, unit, max }: { icon: 
     </div>
   );
 }
-
-    

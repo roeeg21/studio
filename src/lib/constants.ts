@@ -3,55 +3,58 @@
 export const KG_TO_LB = 2.20462;
 export const GAL_TO_LB = 6;
 
+// Standard Empty Weight for a 2000 Cessna 182T is typically higher.
+// Using a sample value based on the POH.
 export const AIRCRAFT_SPECS = {
-  emptyWeight: 1924, // lbs
-  emptyCg: 39.42, // inches
+  emptyWeight: 2020, // lbs - Sample Basic Empty Weight from POH
+  emptyCg: 38.5, // inches - Sample BEW CG from POH
   get emptyMoment() {
     return this.emptyWeight * this.emptyCg;
   },
 };
 
+// Station arms updated per the 2000 C182T POH.
 export const STATIONS = {
   pilot: { arm: 37, label: 'Pilot' },
   coPilot: { arm: 37, label: 'Co-pilot' },
   rearSeats: { arm: 73, label: 'Rear Passengers' },
-  fuel: { arm: 48, label: 'Fuel' }, // Label updated
-  baggageA: { arm: 95, label: 'Baggage Area A' },
-  baggageB: { arm: 108, label: 'Baggage Area B' },
-  baggageC: { arm: 120, label: 'Baggage Area C' },
+  fuel: { arm: 48, label: 'Fuel' },
+  baggageA: { arm: 95, label: 'Baggage Area A' }, // Forward baggage
+  baggageB: { arm: 108, label: 'Baggage Area B' }, // Aft baggage
+  baggageC: { arm: 123, label: 'Baggage Area C' }, // Extended aft baggage
 };
 
+// Limits updated per the 2000 C182T POH.
 export const LIMITS = {
-  maxWeight: 3100, // lbs
+  maxWeight: 3100, // lbs (Maximum Ramp and Takeoff Weight)
   maxLandingWeight: 2950, // lbs
   baggageAMax: 120, // lbs
-  baggageBMax: 80, // lbs
-  baggageCMax: 80, // lbs
-  totalBaggageMax: 200, // lbs
+  baggageBMax: 50,  // lbs in Area B
+  baggageCMax: 30,  // lbs in Area C
+  totalBaggageMax: 200, // lbs (Combined A+B+C)
   fuelMaxGal: 87, // gallons usable
   get fuelMaxLbs() {
     return this.fuelMaxGal * GAL_TO_LB;
   },
 };
 
+// CG Envelope for Normal Category, updated per 2000 C182T POH, Section 6.
 export const CG_ENVELOPE = [
   // Forward limit points
-  { weight: 1950, cg: 33.0 }, // Assuming a min weight for charting
-  { weight: 2250, cg: 33.0 },
-  { weight: 2400, cg: 34.0 },
-  { weight: 2700, cg: 36.0 },
-  { weight: 3100, cg: 41.0 },
+  { weight: 1950, cg: 35.0 },
+  { weight: 2300, cg: 35.0 },
+  { weight: 3100, cg: 40.5 },
   // Aft limit points
-  { weight: 3100, cg: 46.0 },
-  { weight: 1950, cg: 46.0 },
+  { weight: 3100, cg: 47.0 },
+  { weight: 1950, cg: 47.0 },
   // Close the loop
-  { weight: 1950, cg: 33.0 },
+  { weight: 1950, cg: 35.0 },
 ];
 
 
 export const CG_LIMITS_FOR_AI = {
-  forwardLimit: 33.0, 
-  aftLimit: 46.0,
+  forwardLimit: 35.0, 
+  aftLimit: 47.0,
 };
 
 export const AIRPORT_DATA = {
@@ -75,9 +78,9 @@ export const AIRPORT_DATA = {
       { type: 'ATIS', freq: '128.8 MHz' },
     ],
   },
-  LLIB: {
+  LLBG: {
     name: 'Ben Gurion Airport',
-    metar: 'LLIB 121050Z 31015KT 9999 SCT035 BKN100 27/19 Q1011 NOSIG',
+    metar: 'LLBG 121050Z 31015KT 9999 SCT035 BKN100 27/19 Q1011 NOSIG',
     taf: 'LLBG 121100Z 1212/1312 32012KT 9999 SCT030 TEMPO 1215/1219 32018G28KT',
     frequencies: [
       { type: 'Tower', freq: '118.1 MHz / 124.6 MHz' },

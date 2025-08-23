@@ -4,7 +4,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { AIRPORT_DATA } from '@/lib/constants';
-import { TowerControl, Wind, CloudSun, Badge } from 'lucide-react';
+import { TowerControl, Wind, CloudSun } from 'lucide-react';
 import { getFlightCategory, FlightCategory } from '@/lib/weather-utils';
 import { Badge as BadgeUI } from '@/components/ui/badge';
 import { cn } from '@/lib/utils';
