@@ -35,13 +35,17 @@ export const LIMITS = {
 };
 
 export const CG_ENVELOPE = [
+  // Forward limit points
+  { weight: 1950, cg: 33.0 }, // Assuming a min weight for charting
   { weight: 2250, cg: 33.0 },
   { weight: 2400, cg: 34.0 },
   { weight: 2700, cg: 36.0 },
   { weight: 3100, cg: 41.0 },
+  // Aft limit points
   { weight: 3100, cg: 46.0 },
-  { weight: 2250, cg: 46.0 },
-  { weight: 2250, cg: 33.0 }, // Close the loop for area chart
+  { weight: 1950, cg: 46.0 },
+  // Close the loop
+  { weight: 1950, cg: 33.0 },
 ];
 
 

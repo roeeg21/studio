@@ -7,7 +7,7 @@ import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Switch } from '@/components/ui/switch';
 import { Separator } from '@/components/ui/separator';
-import { AIRCRAFT_SPECS, STATIONS, LIMITS, KG_TO_LB, CG_ENVELOPE, GAL_TO_LB } from '@/lib/constants';
+import { AIRCRAFT_SPECS, STATIONS, LIMITS, KG_TO_LB, GAL_TO_LB } from '@/lib/constants';
 import { User, Fuel, Luggage, Save, FolderOpen, AlertCircle, Droplets } from 'lucide-react';
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
@@ -54,12 +54,16 @@ const isCgWithinEnvelope = (weight: number, cg: number): boolean => {
   if (weight <= 2250) {
     forwardLimit = 33.0;
   } else if (weight > 2250 && weight <= 2400) {
+    // Linear interpolation between (2250, 33.0) and (2400, 34.0)
     forwardLimit = 33.0 + ((weight - 2250) / (2400 - 2250)) * (34.0 - 33.0);
   } else if (weight > 2400 && weight <= 2700) {
+    // Linear interpolation between (2400, 34.0) and (2700, 36.0)
     forwardLimit = 34.0 + ((weight - 2400) / (2700 - 2400)) * (36.0 - 34.0);
   } else if (weight > 2700 && weight <= 3100) {
+    // Linear interpolation between (2700, 36.0) and (3100, 41.0)
     forwardLimit = 36.0 + ((weight - 2700) / (3100 - 2700)) * (41.0 - 36.0);
   } else {
+    // This case handles weights above maxWeight, which should be caught by the first check.
     return false;
   }
 
@@ -311,5 +315,3 @@ function WeightInput({ icon: Icon, label, value, onChange, unit, max }: { icon: 
     </div>
   );
 }
-
-    

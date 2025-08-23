@@ -85,8 +85,8 @@ export default function CgEnvelopeChart({ totalWeight, totalCg, landingWeight, l
                 activeDot={false}
             />
 
-            <ReferenceLine y={LIMITS.maxLandingWeight} stroke="blue" strokeWidth={2} label={{ value: 'Landing', position: 'right', fill: 'blue' }} />
-            <ReferenceLine x={34} stroke="green" strokeWidth={2} segment={[{y: 1800}, {y: 2400}]} label={{ value: 'NoAutoPilot', position: 'insideTop', fill: 'green' }}/>
+            <ReferenceLine y={LIMITS.maxLandingWeight} stroke="hsl(var(--chart-2))" strokeDasharray="4 4" label={{ value: 'Max Landing Weight', position: 'insideBottomRight', fill: 'hsl(var(--foreground))', fontSize: 12 }} />
+            <ReferenceLine x={34} y1={1950} y2={2400} stroke="hsl(var(--chart-3))" strokeDasharray="4 4" label={{ value: 'No Autopilot', position: 'insideTopLeft', fill: 'hsl(var(--foreground))', fontSize: 12, angle: -90, offset: 10 }}/>
 
             {totalWeight > AIRCRAFT_SPECS.emptyWeight && (
               <ReferenceDot
@@ -117,5 +117,3 @@ export default function CgEnvelopeChart({ totalWeight, totalCg, landingWeight, l
     </>
   );
 }
-
-    
