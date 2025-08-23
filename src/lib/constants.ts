@@ -6,7 +6,7 @@ export const GAL_TO_LB = 6;
 // Standard Empty Weight for a 2000 Cessna 182T (non-turbo).
 // Using a sample value based on the POH.
 export const AIRCRAFT_SPECS = {
-  emptyWeight: 1970, // lbs - Sample Basic Empty Weight from POH
+  emptyWeight: 1924, // lbs - Sample Basic Empty Weight from POH
   emptyCg: 41.5, // inches - Sample BEW CG from POH
   get emptyMoment() {
     return this.emptyWeight * this.emptyCg;
