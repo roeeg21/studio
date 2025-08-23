@@ -1,6 +1,6 @@
 'use client';
 
-import { Area, AreaChart, CartesianGrid, ReferenceDot, ResponsiveContainer, Tooltip, XAxis, YAxis } from 'recharts';
+import { Area, AreaChart, CartesianGrid, ReferenceDot, ResponsiveContainer, Tooltip, XAxis, YAxis, Line, ReferenceLine } from 'recharts';
 import { ChartContainer, ChartTooltip, ChartTooltipContent } from '@/components/ui/chart';
 import { CG_ENVELOPE, LIMITS, AIRCRAFT_SPECS } from '@/lib/constants';
 
@@ -20,14 +20,22 @@ export default function CgEnvelopeChart({ totalWeight, totalCg, isWithinLimits }
     },
     current: {
       label: "Current CG",
+    },
+    landing: {
+        label: "Max Landing Weight",
+        color: "hsl(var(--chart-2))",
     }
   };
 
+  const domainX: [number, number] = [32, 48];
+  const domainY: [number, number] = [1800, 3200];
+
+
   return (
     <>
-      <h3 className="text-lg font-semibold">CG Envelope</h3>
+      <h3 className="text-lg font-semibold">Center of Gravity Limits</h3>
       <p className="text-sm text-muted-foreground mb-4">
-        The calculated Center of Gravity must be within the safe envelope.
+        The calculated Center of Gravity must be within the safe envelope for takeoff and landing.
       </p>
       <div className="h-80">
         <ChartContainer config={chartConfig} className="h-full w-full">
@@ -36,44 +44,48 @@ export default function CgEnvelopeChart({ totalWeight, totalCg, isWithinLimits }
             data={CG_ENVELOPE}
             margin={{
               top: 5,
-              right: 10,
-              left: 10,
+              right: 20,
+              left: 20,
               bottom: 20,
             }}
           >
-            <CartesianGrid vertical={false} />
+            <CartesianGrid strokeDasharray="3 3" />
             <XAxis
               dataKey="cg"
               type="number"
-              domain={['dataMin - 1', 'dataMax + 1']}
-              label={{ value: 'Center of Gravity (in)', position: 'bottom', offset: 10 }}
-              tickCount={7}
-              tickFormatter={(value) => value.toFixed(1)}
-              tickLine={false}
-              axisLine={false}
+              domain={domainX}
+              label={{ value: 'CG (in)', position: 'bottom', offset: 10 }}
+              tickCount={17}
+              tickFormatter={(value) => value.toString()}
+              axisLine={{ stroke: 'hsl(var(--foreground))' }}
+              tickLine={{ stroke: 'hsl(var(--foreground))' }}
+              
             />
             <YAxis
               dataKey="weight"
               type="number"
-              domain={[1800, LIMITS.maxWeight + 200]}
-              label={{ value: 'Weight (lbs)', angle: -90, position: 'insideLeft', offset: 0 }}
-              tickLine={false}
-              axisLine={false}
+              domain={domainY}
+              label={{ value: 'Weight (lbs)', angle: -90, position: 'insideLeft', offset: -10 }}
+              tickCount={15}
+              tickFormatter={(value) => value.toString()}
+              axisLine={{ stroke: 'hsl(var(--foreground))' }}
+              tickLine={{ stroke: 'hsl(var(--foreground))' }}
             />
             <ChartTooltip cursor={false} content={<ChartTooltipContent indicator="line" labelKey="weight" />} />
-            <defs>
-              <linearGradient id="fillEnvelope" x1="0" y1="0" x2="0" y2="1">
-                <stop offset="5%" stopColor="var(--color-envelope)" stopOpacity={0.8} />
-                <stop offset="95%" stopColor="var(--color-envelope)" stopOpacity={0.1} />
-              </linearGradient>
-            </defs>
+            
             <Area
                 dataKey="weight"
-                type="natural"
-                fill="url(#fillEnvelope)"
-                stroke="var(--color-envelope)"
+                type="linear"
+                fill="hsl(var(--primary))"
+                fillOpacity={0.1}
+                stroke="hsl(var(--destructive))"
+                strokeWidth={2}
                 stackId="a"
             />
+
+            <ReferenceLine y={LIMITS.maxLandingWeight} stroke="blue" strokeWidth={2} label={{ value: 'Landing', position: 'right', fill: 'blue' }} />
+            <ReferenceLine x={34} stroke="green" strokeWidth={2} segment={[{y: 1800}, {y: 2400}]} label={{ value: 'NoAutoPilot', position: 'insideTop', fill: 'green' }}/>
+
             {totalWeight > AIRCRAFT_SPECS.emptyWeight && (
               <ReferenceDot
                 x={totalCg}

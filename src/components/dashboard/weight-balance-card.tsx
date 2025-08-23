@@ -42,21 +42,25 @@ type Profile = {
 };
 
 const isCgWithinEnvelope = (weight: number, cg: number): boolean => {
-  if (weight < CG_ENVELOPE[0].weight || weight > LIMITS.maxWeight) return false;
-  
-  const aftLimit = CG_ENVELOPE[3].cg;
+  if (weight < AIRCRAFT_SPECS.emptyWeight || weight > LIMITS.maxWeight) return false;
+
+  const aftLimit = 46.0;
   if (cg > aftLimit) return false;
 
-  // Interpolate forward limit
-  let forwardLimit = CG_ENVELOPE[0].cg;
-  for (let i = 0; i < CG_ENVELOPE.length - 1; i++) {
-    const p1 = CG_ENVELOPE[i];
-    const p2 = CG_ENVELOPE[i+1];
-    if (weight >= p1.weight && weight <= p2.weight) {
-      forwardLimit = p1.cg + ((weight - p1.weight) * (p2.cg - p1.cg)) / (p2.weight - p1.weight);
-      break;
-    }
+  let forwardLimit = 0;
+  if (weight <= 2250) {
+    forwardLimit = 33.0;
+  } else if (weight > 2250 && weight <= 2400) {
+    forwardLimit = 33.0 + ((weight - 2250) / (2400 - 2250)) * (34.0 - 33.0);
+  } else if (weight > 2400 && weight <= 2700) {
+    forwardLimit = 34.0 + ((weight - 2400) / (2700 - 2400)) * (36.0 - 34.0);
+  } else if (weight > 2700 && weight <= 3100) {
+    forwardLimit = 36.0 + ((weight - 2700) / (3100 - 2700)) * (41.0 - 36.0);
+  } else {
+    // Should not happen if max weight is respected
+    return false;
   }
+
   return cg >= forwardLimit;
 };
 

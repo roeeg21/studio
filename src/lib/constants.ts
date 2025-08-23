@@ -23,6 +23,7 @@ export const STATIONS = {
 
 export const LIMITS = {
   maxWeight: 3100, // lbs
+  maxLandingWeight: 2950, // lbs
   baggageAMax: 120, // lbs
   baggageBMax: 80, // lbs
   baggageCMax: 80, // lbs
@@ -34,17 +35,19 @@ export const LIMITS = {
 };
 
 export const CG_ENVELOPE = [
-  { weight: 2200, cg: 35.0 },
-  { weight: 2950, cg: 40.5 },
-  { weight: 3100, cg: 41.5 },
-  { weight: 3100, cg: 47.3 },
-  { weight: 2200, cg: 47.3 },
-  { weight: 2200, cg: 35.0 }, // Close the loop for area chart
+  { weight: 2250, cg: 33.0 },
+  { weight: 2400, cg: 34.0 },
+  { weight: 2700, cg: 36.0 },
+  { weight: 3100, cg: 41.0 },
+  { weight: 3100, cg: 46.0 },
+  { weight: 2250, cg: 46.0 },
+  { weight: 2250, cg: 33.0 }, // Close the loop for area chart
 ];
 
+
 export const CG_LIMITS_FOR_AI = {
-  forwardLimit: 35.0, // Simplification for AI prompt, using the most restrictive limit
-  aftLimit: 47.3,
+  forwardLimit: 33.0, 
+  aftLimit: 46.0,
 };
 
 export const AIRPORT_DATA = {
