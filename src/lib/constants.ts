@@ -57,11 +57,14 @@ export const CG_LIMITS_FOR_AI = {
   aftLimit: 47.0,
 };
 
-export const AIRPORT_DATA = {
+export type AirportData = {
+  name: string;
+  frequencies: { type: string; freq: string }[];
+};
+
+export const AIRPORT_DATA: Record<string, AirportData> = {
   LLHA: {
     name: 'Haifa Airport',
-    metar: 'LLHA 121050Z 29010KT 9999 SCT030 28/18 Q1012 NOSIG',
-    taf: 'LLHA 120500Z 1206/1218 28012KT 9999 SCT025 BECMG 1210/1212 32008KT',
     frequencies: [
       { type: 'Tower', freq: '122.7 MHz' },
       { type: 'Ground', freq: '121.9 MHz' },
@@ -70,8 +73,6 @@ export const AIRPORT_DATA = {
   },
   LLHZ: {
     name: 'Herzliya Airport',
-    metar: 'LLHZ 121050Z 27008KT 9999 FEW025 29/17 Q1013 NOSIG',
-    taf: 'LLHZ 120500Z 1206/1218 26010KT 9999 FEW020 BECMG 1209/1211 30007KT',
     frequencies: [
       { type: 'Tower', freq: '123.5 MHz' },
       { type: 'Ground', freq: '121.8 MHz' },
@@ -80,8 +81,6 @@ export const AIRPORT_DATA = {
   },
   LLBG: {
     name: 'Ben Gurion Airport',
-    metar: 'LLBG 121050Z 31015KT 9999 SCT035 BKN100 27/19 Q1011 NOSIG',
-    taf: 'LLBG 121100Z 1212/1312 32012KT 9999 SCT030 TEMPO 1215/1219 32018G28KT',
     frequencies: [
       { type: 'Tower', freq: '118.1 MHz / 124.6 MHz' },
       { type: 'Ground', freq: '121.95 MHz' },
