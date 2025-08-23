@@ -26,7 +26,7 @@ export const LIMITS = {
   baggageAMax: 120, // lbs
   baggageBMax: 80, // lbs
   baggageCMax: 80, // lbs
-  totalBaggageMax: 120, // lbs
+  totalBaggageMax: 200, // lbs
   fuelMaxGal: 87, // gallons usable
   get fuelMaxLbs() {
     return this.fuelMaxGal * GAL_TO_LB;

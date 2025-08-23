@@ -13,6 +13,7 @@ import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, D
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { useToast } from '@/hooks/use-toast';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
+import { Alert, AlertDescription } from '@/components/ui/alert';
 
 type Weights = {
   pilot: number;
@@ -90,7 +91,7 @@ export default function WeightBalanceCard({ onUpdate }: WeightBalanceCardProps) 
   const handleFuelChange = (value: string) => {
     setFuelGal(value);
     const numericValue = parseInt(value, 10) || 0;
-    setWeights(prev => ({ ...prev, fuel: numericValue * GAL_TO_LB }));
+    setWeights(prev => ({ ...prev, fuel: Math.round(numericValue * GAL_TO_LB) }));
   };
 
   const getDisplayValue = (lbs: number) => {
@@ -107,14 +108,16 @@ export default function WeightBalanceCard({ onUpdate }: WeightBalanceCardProps) 
     const baggageBMoment = weights.baggageB * STATIONS.baggageB.arm;
     const baggageCMoment = weights.baggageC * STATIONS.baggageC.arm;
 
-    const totalPayloadWeight = weights.pilot + weights.coPilot + weights.rearSeats + weights.fuel + weights.baggageA + weights.baggageB + weights.baggageC;
+    const totalBaggageWeight = weights.baggageA + weights.baggageB + weights.baggageC;
+
+    const totalPayloadWeight = weights.pilot + weights.coPilot + weights.rearSeats + weights.fuel + totalBaggageWeight;
     const totalWeight = AIRCRAFT_SPECS.emptyWeight + totalPayloadWeight;
     const totalMoment = AIRCRAFT_SPECS.emptyMoment + pilotMoment + coPilotMoment + rearMoment + fuelMoment + baggageAMoment + baggageBMoment + baggageCMoment;
     const totalCg = totalWeight > 0 ? totalMoment / totalWeight : AIRCRAFT_SPECS.emptyCg;
 
     const isWithinLimits = isCgWithinEnvelope(totalWeight, totalCg);
 
-    return { totalWeight, totalCg, isWithinLimits };
+    return { totalWeight, totalCg, isWithinLimits, totalBaggageWeight };
   }, [weights]);
 
   useEffect(() => {
@@ -164,6 +167,7 @@ export default function WeightBalanceCard({ onUpdate }: WeightBalanceCardProps) 
   };
 
   const unitLabel = isKg ? 'kg' : 'lb';
+  const isBaggageOverLimit = calculation.totalBaggageWeight > LIMITS.totalBaggageMax;
 
   return (
     <Card className="h-full">
@@ -187,6 +191,15 @@ export default function WeightBalanceCard({ onUpdate }: WeightBalanceCardProps) 
         <WeightInput icon={Luggage} label={STATIONS.baggageB.label} value={getDisplayValue(weights.baggageB)} onChange={e => handleWeightChange('baggageB', e.target.value)} unit={unitLabel} max={isKg ? Math.round(LIMITS.baggageBMax / KG_TO_LB) : LIMITS.baggageBMax}/>
         <WeightInput icon={Luggage} label={STATIONS.baggageC.label} value={getDisplayValue(weights.baggageC)} onChange={e => handleWeightChange('baggageC', e.target.value)} unit={unitLabel} max={isKg ? Math.round(LIMITS.baggageCMax / KG_TO_LB) : LIMITS.baggageCMax}/>
         
+        {isBaggageOverLimit && (
+          <Alert variant="destructive">
+            <AlertCircle className="h-4 w-4" />
+            <AlertDescription>
+              Total baggage weight exceeds the {LIMITS.totalBaggageMax} lb limit.
+            </AlertDescription>
+          </Alert>
+        )}
+
         <Separator />
 
         {/* Totals */}
