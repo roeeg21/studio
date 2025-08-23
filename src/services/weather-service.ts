@@ -8,15 +8,17 @@ export type WeatherData = {
   taf: string;
 };
 
+// This is a loose schema because the API can return a single object or an array
+const ReportSchema = z.union([
+  z.object({ raw_text: z.string() }),
+  z.array(z.object({ raw_text: z.string() })),
+]);
+
 const WeatherResponseSchema = z.object({
   response: z.object({
     data: z.object({
-      METAR: z.array(z.object({
-        raw_text: z.string(),
-      })).optional(),
-      TAF: z.array(z.object({
-        raw_text: z.string(),
-      })).optional(),
+      METAR: ReportSchema.optional(),
+      TAF: ReportSchema.optional(),
     }),
   }),
 });
@@ -28,7 +30,9 @@ export async function getWeatherData(airportCode: string): Promise<WeatherData> 
     const response = await fetch(url, {
       headers: {
         'User-Agent': 'Cessna182T-Dashboard/1.0',
-      }
+      },
+      // Using no-cache to ensure fresh data is fetched every time
+      cache: 'no-store',
     });
 
     if (!response.ok) {
@@ -36,6 +40,11 @@ export async function getWeatherData(airportCode: string): Promise<WeatherData> 
     }
 
     const xmlText = await response.text();
+    // The API sometimes returns an empty response for airports with no data
+    if (!xmlText.trim()) {
+      return { metar: 'N/A', taf: 'N/A' };
+    }
+    
     const parser = new XMLParser({ ignoreAttributes: false });
     const jsonObj = parser.parse(xmlText);
     
@@ -47,13 +56,23 @@ export async function getWeatherData(airportCode: string): Promise<WeatherData> 
     }
 
     const data = parsed.data.response.data;
+    
+    // Helper function to extract raw_text whether it's an object or an array
+    const getRawText = (report?: z.infer<typeof ReportSchema>): string => {
+        if (!report) return 'N/A';
+        if (Array.isArray(report)) {
+            return report[0]?.raw_text ?? 'N/A';
+        }
+        return report.raw_text ?? 'N/A';
+    }
 
     return {
-      metar: data.METAR?.[0]?.raw_text ?? 'N/A',
-      taf: data.TAF?.[0]?.raw_text ?? 'N/A',
+      metar: getRawText(data.METAR),
+      taf: getRawText(data.TAF),
     };
   } catch (error) {
     console.error(`Error fetching weather data for ${airportCode}:`, error);
-    throw new Error('Could not fetch weather data.');
+    // Return N/A to prevent the component from crashing on a failed fetch
+    return { metar: 'N/A', taf: 'N/A' };
   }
 }
