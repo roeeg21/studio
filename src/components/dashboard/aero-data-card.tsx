@@ -72,8 +72,9 @@ function WeatherInfo({ airportId, airport }: { airportId: string; airport: Airpo
     return <p>Could not load weather data.</p>;
   }
   
-  const metarCategory = getFlightCategory(weatherData.metar);
-  const tafCategory = getFlightCategory(weatherData.taf);
+  const metarCategory = weatherData.metar ? getFlightCategory(weatherData.metar) : 'VFR';
+  const tafCategory = weatherData.taf ? getFlightCategory(weatherData.taf) : 'VFR';
+
 
   return (
     <div className="space-y-4">
@@ -154,7 +155,7 @@ export default function AeroDataCard() {
         <CardTitle>Aerodrome Data</CardTitle>
       </CardHeader>
       <CardContent>
-        <Tabs defaultValue="LLHA">
+        <Tabs defaultValue="LLBG">
           <TabsList className="grid w-full grid-cols-3">
             {airportIdentifiers.map((id) => (
               <TabsTrigger key={id} value={id}>
