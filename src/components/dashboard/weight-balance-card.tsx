@@ -82,20 +82,20 @@ export default function WeightBalanceCard({ onUpdate }: WeightBalanceCardProps) 
   }, []);
 
   const handleWeightChange = (name: keyof Weights, value: string) => {
-    const numericValue = parseFloat(value) || 0;
-    const valueInLbs = isKg ? numericValue * KG_TO_LB : numericValue;
+    const numericValue = parseInt(value, 10) || 0;
+    const valueInLbs = isKg ? Math.round(numericValue * KG_TO_LB) : numericValue;
     setWeights(prev => ({ ...prev, [name]: valueInLbs }));
   };
   
   const handleFuelChange = (value: string) => {
     setFuelGal(value);
-    const numericValue = parseFloat(value) || 0;
+    const numericValue = parseInt(value, 10) || 0;
     setWeights(prev => ({ ...prev, fuel: numericValue * GAL_TO_LB }));
   };
 
   const getDisplayValue = (lbs: number) => {
-    const value = isKg ? lbs / KG_TO_LB : lbs;
-    return value > 0 ? value.toFixed(1) : '';
+    const value = isKg ? Math.round(lbs / KG_TO_LB) : lbs;
+    return value > 0 ? value.toString() : '';
   };
 
   const calculation = useMemo(() => {
@@ -156,7 +156,7 @@ export default function WeightBalanceCard({ onUpdate }: WeightBalanceCardProps) 
       }
 
       setWeights(loadedWeights);
-      setFuelGal((loadedWeights.fuel / GAL_TO_LB).toFixed(1));
+      setFuelGal(Math.round(loadedWeights.fuel / GAL_TO_LB).toString());
 
       toast({ title: "Success", description: `Profile "${name}" loaded.` });
       setLoadOpen(false);
@@ -183,9 +183,9 @@ export default function WeightBalanceCard({ onUpdate }: WeightBalanceCardProps) 
         <WeightInput icon={User} label={STATIONS.coPilot.label} value={getDisplayValue(weights.coPilot)} onChange={e => handleWeightChange('coPilot', e.target.value)} unit={unitLabel} />
         <WeightInput icon={User} label={STATIONS.rearSeats.label} value={getDisplayValue(weights.rearSeats)} onChange={e => handleWeightChange('rearSeats', e.target.value)} unit={unitLabel} />
         <WeightInput icon={Fuel} label={STATIONS.fuel.label} value={fuelGal} onChange={e => handleFuelChange(e.target.value)} unit="gal" max={LIMITS.fuelMaxGal} />
-        <WeightInput icon={Luggage} label={STATIONS.baggageA.label} value={getDisplayValue(weights.baggageA)} onChange={e => handleWeightChange('baggageA', e.target.value)} unit={unitLabel} max={isKg ? LIMITS.baggageAMax / KG_TO_LB : LIMITS.baggageAMax} />
-        <WeightInput icon={Luggage} label={STATIONS.baggageB.label} value={getDisplayValue(weights.baggageB)} onChange={e => handleWeightChange('baggageB', e.target.value)} unit={unitLabel} max={isKg ? LIMITS.baggageBMax / KG_TO_LB : LIMITS.baggageBMax}/>
-        <WeightInput icon={Luggage} label={STATIONS.baggageC.label} value={getDisplayValue(weights.baggageC)} onChange={e => handleWeightChange('baggageC', e.target.value)} unit={unitLabel} max={isKg ? LIMITS.baggageCMax / KG_TO_LB : LIMITS.baggageCMax}/>
+        <WeightInput icon={Luggage} label={STATIONS.baggageA.label} value={getDisplayValue(weights.baggageA)} onChange={e => handleWeightChange('baggageA', e.target.value)} unit={unitLabel} max={isKg ? Math.round(LIMITS.baggageAMax / KG_TO_LB) : LIMITS.baggageAMax} />
+        <WeightInput icon={Luggage} label={STATIONS.baggageB.label} value={getDisplayValue(weights.baggageB)} onChange={e => handleWeightChange('baggageB', e.target.value)} unit={unitLabel} max={isKg ? Math.round(LIMITS.baggageBMax / KG_TO_LB) : LIMITS.baggageBMax}/>
+        <WeightInput icon={Luggage} label={STATIONS.baggageC.label} value={getDisplayValue(weights.baggageC)} onChange={e => handleWeightChange('baggageC', e.target.value)} unit={unitLabel} max={isKg ? Math.round(LIMITS.baggageCMax / KG_TO_LB) : LIMITS.baggageCMax}/>
         
         <Separator />
 
@@ -237,7 +237,7 @@ export default function WeightBalanceCard({ onUpdate }: WeightBalanceCardProps) 
 
 // Sub-component for inputs
 function WeightInput({ icon: Icon, label, value, onChange, unit, max }: { icon: React.ElementType, label: string, value: string, onChange: (e: React.ChangeEvent<HTMLInputElement>) => void, unit: string, max?: number }) {
-  const numericValue = parseFloat(value);
+  const numericValue = parseInt(value, 10);
   const hasWarning = max && !isNaN(numericValue) && numericValue > max;
 
   return (
@@ -247,14 +247,14 @@ function WeightInput({ icon: Icon, label, value, onChange, unit, max }: { icon: 
         {label}
       </Label>
       <div className="col-span-2 relative">
-         <Input id={label} type="number" value={value} onChange={onChange} placeholder="0.0" className={`pr-10 ${hasWarning ? 'border-destructive' : ''}`} />
+         <Input id={label} type="number" value={value} onChange={onChange} placeholder="0" className={`pr-10 ${hasWarning ? 'border-destructive' : ''}`} step="1" />
          <span className="absolute inset-y-0 right-0 flex items-center pr-3 text-sm text-muted-foreground">{unit}</span>
       </div>
       {max && (
         <Popover>
           <PopoverTrigger asChild>
             <p className={`col-start-2 col-span-2 text-xs text-muted-foreground cursor-pointer hover:text-foreground ${hasWarning ? 'text-destructive font-semibold' : ''}`}>
-              Limit: {max.toFixed(1)} {unit}
+              Limit: {max} {unit}
             </p>
           </PopoverTrigger>
           <PopoverContent className="w-auto p-2 text-xs">Max allowable {unit === 'gal' ? 'fuel' : 'weight'} for this station.</PopoverContent>
