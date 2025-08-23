@@ -4,7 +4,7 @@ export const KG_TO_LB = 2.20462;
 export const GAL_TO_LB = 6;
 
 export const AIRCRAFT_SPECS = {
-  emptyWeight: 2019, // lbs
+  emptyWeight: 1924, // lbs
   emptyCg: 39.42, // inches
   get emptyMoment() {
     return this.emptyWeight * this.emptyCg;
