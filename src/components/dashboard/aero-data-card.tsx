@@ -72,8 +72,8 @@ function WeatherInfo({ airportId, airport }: { airportId: string; airport: Airpo
     return <p>Could not load weather data.</p>;
   }
   
-  const metarCategory = weatherData.metar ? getFlightCategory(weatherData.metar) : 'VFR';
-  const tafCategory = weatherData.taf ? getFlightCategory(weatherData.taf) : 'VFR';
+  const metarCategory = weatherData.metar && weatherData.metar !== 'N/A' && weatherData.metar !== 'Error loading data.' ? getFlightCategory(weatherData.metar) : null;
+  const tafCategory = weatherData.taf && weatherData.taf !== 'N/A' && weatherData.taf !== 'Error loading data.' ? getFlightCategory(weatherData.taf) : null;
 
 
   return (
@@ -86,7 +86,7 @@ function WeatherInfo({ airportId, airport }: { airportId: string; airport: Airpo
             <div className="flex-1">
                 <div className="flex justify-between items-center mb-2">
                     <p className="font-mono text-sm font-semibold">METAR</p>
-                    <Badge className={cn('text-white', categoryStyles[metarCategory])}>{metarCategory}</Badge>
+                    {metarCategory && <Badge className={cn('text-white', categoryStyles[metarCategory])}>{metarCategory}</Badge>}
                 </div>
                 <p className="font-mono text-xs break-words">{weatherData.metar}</p>
             </div>
@@ -101,7 +101,7 @@ function WeatherInfo({ airportId, airport }: { airportId: string; airport: Airpo
             <div className="flex-1">
                 <div className="flex justify-between items-center mb-2">
                     <p className="font-mono text-sm font-semibold">TAF</p>
-                    <Badge className={cn('text-white', categoryStyles[tafCategory])}>{tafCategory}</Badge>
+                    {tafCategory && <Badge className={cn('text-white', categoryStyles[tafCategory])}>{tafCategory}</Badge>}
                 </div>
                 <p className="font-mono text-xs break-words">{weatherData.taf}</p>
             </div>
