@@ -29,8 +29,8 @@ export const LIMITS = {
   maxWeight: 3100, // lbs (Maximum Ramp and Takeoff Weight)
   maxLandingWeight: 2950, // lbs
   baggageAMax: 120, // lbs
-  baggageBMax: 50,  // lbs in Area B
-  baggageCMax: 30,  // lbs in Area C
+  baggageBMax: 80,  // lbs in Area B
+  baggageCMax: 80,  // lbs in Area C
   totalBaggageMax: 200, // lbs (Combined A+B+C)
   fuelMaxGal: 87, // gallons usable
   get fuelMaxLbs() {
