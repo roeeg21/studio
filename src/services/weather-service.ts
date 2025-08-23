@@ -1,61 +1,53 @@
 'use server';
 
-import { z } from 'zod';
-
 export type WeatherData = {
   metar: string;
   taf: string;
 };
 
-// Schema for the CheckWX API response
-const CheckWxResponseSchema = z.object({
-  results: z.number(),
-  data: z.array(z.object({
-    raw_text: z.string(),
-  })).optional(),
-});
+async function fetchFromAviationWeather(station: string, reportType: 'metar' | 'taf'): Promise<string> {
+  // Use the official aviationweather.gov API
+  const url = `https://aviationweather.gov/api/data/${reportType}?ids=${station.toUpperCase()}&format=csv`;
 
+  try {
+    const response = await fetch(url, {
+      // Using no-cache to ensure fresh data is fetched every time
+      cache: 'no-store',
+    });
 
-async function fetchFromCheckWx(station: string, reportType: 'metar' | 'taf'): Promise<string> {
-    // This is a demo key with limitations. For production, a real key would be needed.
-    const apiKey = '0e0a708261b05220a28243a207';
-    // The API expects the station code to be in lowercase.
-    const url = `https://api.checkwx.com/${reportType}/${station.toLowerCase()}/decoded`;
-
-    try {
-        const response = await fetch(url, {
-            headers: { 'X-API-Key': apiKey },
-            // Using no-cache to ensure fresh data is fetched every time
-            cache: 'no-store',
-        });
-        
-        if (!response.ok) {
-            console.error(`CheckWX API error for ${reportType}! status: ${response.status}`);
-            return 'N/A';
-        }
-
-        const json = await response.json();
-        const parsed = CheckWxResponseSchema.safeParse(json);
-
-        if (!parsed.success || !parsed.data || parsed.data.length === 0) {
-            console.error(`Failed to parse CheckWX ${reportType} data for ${station}`, parsed.error);
-            return 'N/A';
-        }
-        
-        return parsed.data[0].raw_text;
-
-    } catch (error) {
-        console.error(`Error fetching ${reportType} data from CheckWX for ${station}:`, error);
-        return 'N/A';
+    if (!response.ok) {
+      console.error(`AviationWeather API error for ${reportType}! status: ${response.status}`);
+      return 'N/A';
     }
+
+    const csvText = await response.text();
+    const lines = csvText.split('\n');
+
+    // Find the line corresponding to the raw text
+    // The first line is headers, the second should be the data.
+    if (lines.length > 1 && lines[1]) {
+        const columns = lines[1].split(',');
+        // In both METAR and TAF CSV, the first column is the raw_text
+        const rawText = columns[0];
+        if (rawText) {
+            return rawText;
+        }
+    }
+    
+    // If no data is found after parsing
+    return 'N/A';
+
+  } catch (error) {
+    console.error(`Error fetching ${reportType} data from AviationWeather for ${station}:`, error);
+    return 'N/A';
+  }
 }
 
-
 export async function getWeatherData(airportCode: string): Promise<WeatherData> {
-    const [metar, taf] = await Promise.all([
-        fetchFromCheckWx(airportCode, 'metar'),
-        fetchFromCheckWx(airportCode, 'taf')
-    ]);
+  const [metar, taf] = await Promise.all([
+    fetchFromAviationWeather(airportCode, 'metar'),
+    fetchFromAviationWeather(airportCode, 'taf')
+  ]);
 
-    return { metar, taf };
+  return { metar, taf };
 }
