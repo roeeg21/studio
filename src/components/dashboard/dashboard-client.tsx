@@ -10,6 +10,8 @@ import { AIRCRAFT_SPECS } from '@/lib/constants';
 const initialWbReport: WeightAndBalanceReport = {
   totalWeight: AIRCRAFT_SPECS.emptyWeight,
   totalCg: AIRCRAFT_SPECS.emptyCg,
+  landingWeight: 0,
+  landingCg: 0,
   weights: {
     pilot: 0,
     coPilot: 0,
@@ -20,6 +22,7 @@ const initialWbReport: WeightAndBalanceReport = {
     baggageC: 0,
   },
   isWithinLimits: true,
+  isLandingWeightOk: true,
 };
 
 export default function DashboardClient() {
@@ -35,6 +38,8 @@ export default function DashboardClient() {
           <CgEnvelopeChart
             totalWeight={wbReport.totalWeight}
             totalCg={wbReport.totalCg}
+            landingWeight={wbReport.landingWeight}
+            landingCg={wbReport.landingCg}
             isWithinLimits={wbReport.isWithinLimits}
           />
         </div>
@@ -45,3 +50,5 @@ export default function DashboardClient() {
     </div>
   );
 }
+
+    

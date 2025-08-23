@@ -8,7 +8,7 @@ import { Button } from '@/components/ui/button';
 import { Switch } from '@/components/ui/switch';
 import { Separator } from '@/components/ui/separator';
 import { AIRCRAFT_SPECS, STATIONS, LIMITS, KG_TO_LB, CG_ENVELOPE, GAL_TO_LB } from '@/lib/constants';
-import { User, Fuel, Luggage, Save, FolderOpen, AlertCircle } from 'lucide-react';
+import { User, Fuel, Luggage, Save, FolderOpen, AlertCircle, Droplets } from 'lucide-react';
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { useToast } from '@/hooks/use-toast';
@@ -28,8 +28,11 @@ type Weights = {
 export type WeightAndBalanceReport = {
   totalWeight: number;
   totalCg: number;
+  landingWeight: number;
+  landingCg: number;
   weights: Weights;
   isWithinLimits: boolean;
+  isLandingWeightOk: boolean;
 };
 
 type WeightBalanceCardProps = {
@@ -57,7 +60,6 @@ const isCgWithinEnvelope = (weight: number, cg: number): boolean => {
   } else if (weight > 2700 && weight <= 3100) {
     forwardLimit = 36.0 + ((weight - 2700) / (3100 - 2700)) * (41.0 - 36.0);
   } else {
-    // Should not happen if max weight is respected
     return false;
   }
 
@@ -69,6 +71,7 @@ export default function WeightBalanceCard({ onUpdate }: WeightBalanceCardProps) 
   const [isKg, setIsKg] = useState(false);
   const [weights, setWeights] = useState<Weights>({ pilot: 0, coPilot: 0, rearSeats: 0, fuel: 0, baggageA: 0, baggageB: 0, baggageC: 0 });
   const [fuelGal, setFuelGal] = useState('');
+  const [plannedFuelBurnGal, setPlannedFuelBurnGal] = useState('');
   const [profiles, setProfiles] = useState<Profile[]>([]);
   const [profileName, setProfileName] = useState('');
   const [isSaveOpen, setSaveOpen] = useState(false);
@@ -97,6 +100,10 @@ export default function WeightBalanceCard({ onUpdate }: WeightBalanceCardProps) 
     const numericValue = parseInt(value, 10) || 0;
     setWeights(prev => ({ ...prev, fuel: Math.round(numericValue * GAL_TO_LB) }));
   };
+  
+  const handleFuelBurnChange = (value: string) => {
+    setPlannedFuelBurnGal(value);
+  };
 
   const getDisplayValue = (lbs: number) => {
     const value = isKg ? Math.round(lbs / KG_TO_LB) : lbs;
@@ -121,11 +128,28 @@ export default function WeightBalanceCard({ onUpdate }: WeightBalanceCardProps) 
 
     const isWithinLimits = isCgWithinEnvelope(totalWeight, totalCg);
 
-    return { totalWeight, totalCg, isWithinLimits, totalBaggageWeight };
-  }, [weights]);
+    // Landing Calculation
+    const fuelBurnLbs = (parseInt(plannedFuelBurnGal, 10) || 0) * GAL_TO_LB;
+    const fuelBurnMoment = fuelBurnLbs * STATIONS.fuel.arm;
+    const landingWeight = totalWeight - fuelBurnLbs;
+    const landingMoment = totalMoment - fuelBurnMoment;
+    const landingCg = landingWeight > 0 ? landingMoment / landingWeight : 0;
+    const isLandingWeightOk = landingWeight <= LIMITS.maxLandingWeight;
+
+
+    return { totalWeight, totalCg, isWithinLimits, totalBaggageWeight, landingWeight, landingCg, isLandingWeightOk };
+  }, [weights, plannedFuelBurnGal]);
 
   useEffect(() => {
-    onUpdate({ ...calculation, weights });
+    onUpdate({
+      totalWeight: calculation.totalWeight,
+      totalCg: calculation.totalCg,
+      landingWeight: calculation.landingWeight,
+      landingCg: calculation.landingCg,
+      weights: weights,
+      isWithinLimits: calculation.isWithinLimits,
+      isLandingWeightOk: calculation.isLandingWeightOk,
+    });
   }, [calculation, weights, onUpdate]);
 
   const saveProfile = () => {
@@ -156,7 +180,6 @@ export default function WeightBalanceCard({ onUpdate }: WeightBalanceCardProps) 
         ...profile.weights
       };
 
-      // Backwards compatibility for profiles saved with frontSeats
       if ((profile.weights as any).frontSeats) {
         loadedWeights.pilot = (profile.weights as any).frontSeats;
         loadedWeights.coPilot = 0;
@@ -191,6 +214,7 @@ export default function WeightBalanceCard({ onUpdate }: WeightBalanceCardProps) 
         <WeightInput icon={User} label={STATIONS.coPilot.label} value={getDisplayValue(weights.coPilot)} onChange={e => handleWeightChange('coPilot', e.target.value)} unit={unitLabel} />
         <WeightInput icon={User} label={STATIONS.rearSeats.label} value={getDisplayValue(weights.rearSeats)} onChange={e => handleWeightChange('rearSeats', e.target.value)} unit={unitLabel} />
         <WeightInput icon={Fuel} label={STATIONS.fuel.label} value={fuelGal} onChange={e => handleFuelChange(e.target.value)} unit="gal" max={LIMITS.fuelMaxGal} />
+        <WeightInput icon={Droplets} label="Fuel Burn" value={plannedFuelBurnGal} onChange={e => handleFuelBurnChange(e.target.value)} unit="gal" />
         <WeightInput icon={Luggage} label={STATIONS.baggageA.label} value={getDisplayValue(weights.baggageA)} onChange={e => handleWeightChange('baggageA', e.target.value)} unit={unitLabel} max={isKg ? Math.round(LIMITS.baggageAMax / KG_TO_LB) : LIMITS.baggageAMax} />
         <WeightInput icon={Luggage} label={STATIONS.baggageB.label} value={getDisplayValue(weights.baggageB)} onChange={e => handleWeightChange('baggageB', e.target.value)} unit={unitLabel} max={isKg ? Math.round(LIMITS.baggageBMax / KG_TO_LB) : LIMITS.baggageBMax}/>
         <WeightInput icon={Luggage} label={STATIONS.baggageC.label} value={getDisplayValue(weights.baggageC)} onChange={e => handleWeightChange('baggageC', e.target.value)} unit={unitLabel} max={isKg ? Math.round(LIMITS.baggageCMax / KG_TO_LB) : LIMITS.baggageCMax}/>
@@ -220,6 +244,13 @@ export default function WeightBalanceCard({ onUpdate }: WeightBalanceCardProps) 
                  <div className="flex items-center gap-2">
                   {!calculation.isWithinLimits && <AlertCircle className="h-4 w-4" />}
                   <p>{calculation.totalCg.toFixed(2)} in</p>
+                </div>
+            </div>
+            <div className={`flex justify-between items-center font-medium text-sm text-muted-foreground ${!calculation.isLandingWeightOk ? 'text-destructive' : ''}`}>
+                <p>Landing Weight</p>
+                <div className="flex items-center gap-2">
+                  {!calculation.isLandingWeightOk && <AlertCircle className="h-4 w-4" />}
+                  <p>{calculation.landingWeight.toFixed(2)} lb</p>
                 </div>
             </div>
         </div>
@@ -280,3 +311,5 @@ function WeightInput({ icon: Icon, label, value, onChange, unit, max }: { icon: 
     </div>
   );
 }
+
+    

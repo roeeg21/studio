@@ -7,11 +7,14 @@ import { CG_ENVELOPE, LIMITS, AIRCRAFT_SPECS } from '@/lib/constants';
 type CgEnvelopeChartProps = {
   totalWeight: number;
   totalCg: number;
+  landingWeight: number;
+  landingCg: number;
   isWithinLimits: boolean;
 };
 
-export default function CgEnvelopeChart({ totalWeight, totalCg, isWithinLimits }: CgEnvelopeChartProps) {
+export default function CgEnvelopeChart({ totalWeight, totalCg, landingWeight, landingCg, isWithinLimits }: CgEnvelopeChartProps) {
   const statusColor = isWithinLimits ? 'hsl(var(--chart-1))' : 'hsl(var(--destructive))';
+  const landingStatusColor = 'hsl(var(--chart-2))';
 
   const chartConfig = {
     envelope: {
@@ -96,9 +99,23 @@ export default function CgEnvelopeChart({ totalWeight, totalCg, isWithinLimits }
                 ifOverflow="extendDomain"
               />
             )}
+            
+            {landingWeight > AIRCRAFT_SPECS.emptyWeight && landingCg > 0 && (
+              <ReferenceDot
+                x={landingCg}
+                y={landingWeight}
+                r={8}
+                fill={landingStatusColor}
+                stroke="hsl(var(--background))"
+                strokeWidth={2}
+                ifOverflow="extendDomain"
+              />
+            )}
           </AreaChart>
         </ChartContainer>
       </div>
     </>
   );
 }
+
+    
