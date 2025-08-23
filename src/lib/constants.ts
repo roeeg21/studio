@@ -11,7 +11,8 @@ export const AIRCRAFT_SPECS = {
 };
 
 export const STATIONS = {
-  frontSeats: { arm: 37, label: 'Pilot & Front Passenger' },
+  pilot: { arm: 37, label: 'Pilot' },
+  coPilot: { arm: 37, label: 'Co-pilot' },
   rearSeats: { arm: 73, label: 'Rear Passengers' },
   fuel: { arm: 48, label: 'Fuel (87 gal usable)' }, // Usable fuel
   baggageA: { arm: 95, label: 'Baggage Area A' },

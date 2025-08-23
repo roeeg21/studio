@@ -11,7 +11,8 @@ const initialWbReport: WeightAndBalanceReport = {
   totalWeight: AIRCRAFT_SPECS.emptyWeight,
   totalCg: AIRCRAFT_SPECS.emptyCg,
   weights: {
-    frontSeats: 0,
+    pilot: 0,
+    coPilot: 0,
     rearSeats: 0,
     fuel: 0,
     baggageA: 0,
