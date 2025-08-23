@@ -24,7 +24,7 @@ export const STATIONS = {
 export const LIMITS = {
   maxWeight: 3100, // lbs
   baggageAMax: 120, // lbs
-  baggageBMax: 50, // lbs
+  baggageBMax: 80, // lbs
   baggageCMax: 80, // lbs
   totalBaggageMax: 120, // lbs
   fuelMaxGal: 87, // gallons usable
@@ -79,5 +79,3 @@ export const AIRPORT_DATA = {
     ],
   },
 };
-
-    
