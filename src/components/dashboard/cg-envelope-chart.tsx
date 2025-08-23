@@ -73,14 +73,13 @@ export default function CgEnvelopeChart({ totalWeight, totalCg, isWithinLimits }
             />
             <ChartTooltip cursor={false} content={<ChartTooltipContent indicator="line" labelKey="weight" />} />
             
-            <Area
+            <Line
                 dataKey="weight"
                 type="linear"
-                fill="hsl(var(--primary))"
-                fillOpacity={0.1}
                 stroke="hsl(var(--destructive))"
                 strokeWidth={2}
-                stackId="a"
+                dot={false}
+                activeDot={false}
             />
 
             <ReferenceLine y={LIMITS.maxLandingWeight} stroke="blue" strokeWidth={2} label={{ value: 'Landing', position: 'right', fill: 'blue' }} />
