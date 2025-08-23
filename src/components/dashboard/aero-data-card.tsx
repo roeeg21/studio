@@ -35,16 +35,21 @@ function WeatherInfo({ airportId, airport }: { airportId: string; airport: Airpo
         const data = await getWeatherData(airportId);
         setWeatherData(data);
 
-        if (data.metar) {
+        if (data.metar && data.metar !== 'N/A') {
           const translated = await translateWeather({ raw: data.metar });
           setTranslatedMetar(translated);
+        } else {
+          setTranslatedMetar(null);
         }
-        if (data.taf) {
+        if (data.taf && data.taf !== 'N/A') {
           const translated = await translateWeather({ raw: data.taf });
           setTranslatedTaf(translated);
+        } else {
+          setTranslatedTaf(null);
         }
       } catch (error) {
         console.error(`Failed to fetch weather for ${airportId}`, error);
+        setWeatherData({ metar: 'Error loading data.', taf: 'Error loading data.' });
       } finally {
         setLoading(false);
       }
