@@ -153,10 +153,14 @@ export default function AeroDataCard() {
         <CardTitle>Aerodrome Data</CardTitle>
       </CardHeader>
       <CardContent>
-        <Tabs defaultValue="LLBG">
+        <Tabs defaultValue="LLIB">
           <TabsList className="grid w-full grid-cols-3">
             {airportIdentifiers.map((id) => (
-              <TabsTrigger key={id} value={id}>
+              <TabsTrigger
+                key={id}
+                value={id}
+                className="data-[state=active]:ring-2 data-[state=active]:ring-ring data-[state=active]:shadow-md"
+              >
                 {id}
               </TabsTrigger>
             ))}

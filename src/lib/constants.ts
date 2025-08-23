@@ -79,12 +79,11 @@ export const AIRPORT_DATA: Record<string, AirportData> = {
       { type: 'ATIS', freq: '128.8 MHz' },
     ],
   },
-  LLBG: {
-    name: 'Ben Gurion Airport',
+  LLIB: {
+    name: 'Rosh Pina Airport',
     frequencies: [
-      { type: 'Tower', freq: '118.1 MHz / 124.6 MHz' },
-      { type: 'Ground', freq: '121.95 MHz' },
-      { type: 'Departure', freq: '121.4 MHz' },
+      { type: 'Tower', freq: '122.1 MHz' },
+      { type: 'Approach', freq: '120.3 MHz' },
     ],
   },
 };

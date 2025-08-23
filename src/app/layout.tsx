@@ -4,7 +4,7 @@ import { cn } from '@/lib/utils';
 import { Toaster } from '@/components/ui/toaster';
 
 export const metadata: Metadata = {
-  title: 'Getz Menashe - 4x-DBG Cessna 182T',
+  title: 'Getz Menashe - 4X-DBG Cessna 182T',
   description: 'Weight & Balance, Weather, and AI-powered flight tools for the Cessna 182T.',
 };
 
