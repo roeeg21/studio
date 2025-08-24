@@ -234,11 +234,12 @@ export default function WeightBalanceCard({ onUpdate }: WeightBalanceCardProps) 
         {/* Visualizer */}
         <div className="relative w-full max-w-sm mx-auto">
           <Image
-            src="/cessna182t-top-down.png"
+            src="https://placehold.co/269x226.png"
             alt="Cessna 182T top-down view"
             width={269}
             height={226}
             className="w-full h-auto rounded-md bg-muted"
+            data-ai-hint="cessna top down"
           />
           <WeightDisplay value={getDisplayValue(weights.pilot)} unit={unitLabel} className="top-[32%] left-[24%]" />
           <WeightDisplay value={getDisplayValue(weights.coPilot)} unit={unitLabel} className="top-[32%] right-[24%]" />
