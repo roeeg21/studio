@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect, useMemo, useCallback } from 'react';
+import Image from 'next/image';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from '@/components/ui/card';
 import { Label } from '@/components/ui/label';
 import { Input } from '@/components/ui/input';
@@ -230,6 +231,26 @@ export default function WeightBalanceCard({ onUpdate }: WeightBalanceCardProps) 
         <CardDescription>Enter weights for each station to calculate total weight and center of gravity.</CardDescription>
       </CardHeader>
       <CardContent className="space-y-4">
+        {/* Visualizer */}
+        <div className="relative w-full max-w-sm mx-auto">
+          <Image
+            src="https://placehold.co/400x600.png"
+            alt="Cessna 182T top-down view"
+            width={400}
+            height={600}
+            className="w-full h-auto rounded-md bg-muted"
+            data-ai-hint="cessna schematic"
+          />
+          <WeightDisplay value={getDisplayValue(weights.pilot)} unit={unitLabel} className="top-[32%] left-[24%]" />
+          <WeightDisplay value={getDisplayValue(weights.coPilot)} unit={unitLabel} className="top-[32%] right-[24%]" />
+          <WeightDisplay value={getDisplayValue(weights.rearSeats)} unit={unitLabel} className="top-[49%] left-1/2 -translate-x-1/2" />
+          <WeightDisplay value={getDisplayValue(Number(fuelGal))} unit="gal" className="top-[42%] left-[10%]" />
+          <WeightDisplay value={getDisplayValue(Number(fuelGal))} unit="gal" className="top-[42%] right-[10%]" />
+          <WeightDisplay value={getDisplayValue(weights.baggageA)} unit={unitLabel} className="top-[64%] left-1/2 -translate-x-1/2" />
+          <WeightDisplay value={getDisplayValue(weights.baggageB)} unit={unitLabel} className="top-[73%] left-1/2 -translate-x-1/2" />
+          <WeightDisplay value={getDisplayValue(weights.baggageC)} unit={unitLabel} className="top-[82%] left-1/2 -translate-x-1/2" />
+        </div>
+
         {/* Inputs */}
         <WeightInput icon={User} label={STATIONS.pilot.label} value={getDisplayValue(weights.pilot)} onChange={e => handleWeightChange('pilot', e.target.value)} unit={unitLabel} />
         <WeightInput icon={User} label={STATIONS.coPilot.label} value={getDisplayValue(weights.coPilot)} onChange={e => handleWeightChange('coPilot', e.target.value)} unit={unitLabel} />
@@ -323,6 +344,17 @@ export default function WeightBalanceCard({ onUpdate }: WeightBalanceCardProps) 
     </Card>
   );
 }
+
+// Sub-component for overlaying weight on the image
+function WeightDisplay({ value, unit, className }: { value: string; unit: string; className?: string }) {
+  if (!value || Number(value) === 0) return null;
+  return (
+    <div className={`absolute -translate-x-1/2 bg-background/80 text-foreground text-xs font-bold px-1.5 py-0.5 rounded-md backdrop-blur-sm ${className}`}>
+      {value} {unit}
+    </div>
+  );
+}
+
 
 // Sub-component for inputs
 function WeightInput({ icon: Icon, label, value, onChange, unit, max }: { icon: React.ElementType, label: string, value: string, onChange: (e: React.ChangeEvent<HTMLInputElement>) => void, unit: string, max?: number }) {
