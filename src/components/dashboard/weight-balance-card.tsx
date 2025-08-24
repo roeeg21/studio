@@ -1,7 +1,6 @@
 'use client';
 
 import { useState, useEffect, useMemo, useCallback } from 'react';
-import Image from 'next/image';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from '@/components/ui/card';
 import { Label } from '@/components/ui/label';
 import { Input } from '@/components/ui/input';
@@ -9,7 +8,7 @@ import { Button } from '@/components/ui/button';
 import { Switch } from '@/components/ui/switch';
 import { Separator } from '@/components/ui/separator';
 import { AIRCRAFT_SPECS, STATIONS, LIMITS, KG_TO_LB, GAL_TO_LB } from '@/lib/constants';
-import { User, Fuel, Luggage, Save, FolderOpen, AlertCircle, Droplets, ChevronDown } from 'lucide-react';
+import { User, Fuel, Luggage, Save, FolderOpen, AlertCircle, Droplets } from 'lucide-react';
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { useToast } from '@/hooks/use-toast';
@@ -68,6 +67,45 @@ const isCgWithinEnvelope = (weight: number, cg: number): boolean => {
 
   return cg >= forwardLimit;
 };
+
+const CessnaDiagram = () => (
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      viewBox="0 0 300 300"
+      className="w-full h-auto rounded-md bg-muted"
+      aria-labelledby="cessnaTitle cessnaDesc"
+    >
+      <title id="cessnaTitle">Cessna 182T Top-Down Diagram</title>
+      <desc id="cessnaDesc">A line drawing of a Cessna 182T aircraft from a top-down perspective.</desc>
+      <g stroke="hsl(var(--foreground))" strokeWidth="1" fill="none">
+        {/* Fuselage */}
+        <path d="M 150,20 L 150,250" />
+        <path d="M 140,40 C 140,20 160,20 160,40 L 160,110 L 155,250 L 145,250 L 140,110 Z" fill="hsl(var(--card))" />
+        
+        {/* Propeller */}
+        <path d="M 150,20 C 145,15 155,15 150,20 Z" fill="hsl(var(--foreground))" />
+        <path d="M 148,25 L 142,15" strokeWidth="2" />
+        <path d="M 152,25 L 158,15" strokeWidth="2" />
+
+        {/* Wings */}
+        <path d="M 40,80 L 140,80 L 140,95 L 50,95 Q 40,95 40,85 Z" fill="hsl(var(--card))" />
+        <path d="M 160,80 L 260,80 Q 270,85 260,95 L 160,95 Z" fill="hsl(var(--card))" />
+        
+        {/* Fuel Caps */}
+        <circle cx="120" cy="88" r="3" strokeWidth="0.5" />
+        <circle cx="180" cy="88" r="3" strokeWidth="0.5" />
+
+        {/* Tail */}
+        <path d="M 120,250 L 180,250 L 185,265 L 115,265 Z" fill="hsl(var(--card))" />
+        <path d="M 145,250 L 140,270 L 150,280 L 150,250" fill="hsl(var(--card))" />
+        <path d="M 155,250 L 160,270 L 150,280 L 150,250" fill="hsl(var(--card))" />
+        
+        {/* Cockpit Windows */}
+        <path d="M 142,45 C 140,55 160,55 158,45" stroke="hsl(var(--muted-foreground))" fill="hsl(var(--muted-foreground))" fillOpacity="0.3" />
+        <path d="M 142,98 L 142,110 L 158,110 L 158,98" stroke="hsl(var(--muted-foreground))" fill="hsl(var(--muted-foreground))" fillOpacity="0.3" />
+      </g>
+    </svg>
+);
 
 
 export default function WeightBalanceCard({ onUpdate }: WeightBalanceCardProps) {
@@ -233,15 +271,7 @@ export default function WeightBalanceCard({ onUpdate }: WeightBalanceCardProps) 
       <CardContent className="space-y-4">
         {/* Visualizer */}
         <div className="relative w-full max-w-sm mx-auto">
-          <Image
-            src="https://storage.googleapis.com/stedi-dev-public-assets/cessna-182t-top-down.png"
-            alt="Cessna 182T top-down view"
-            width={269}
-            height={226}
-            className="w-full h-auto rounded-md bg-muted"
-            data-ai-hint="cessna top down"
-            unoptimized
-          />
+          <CessnaDiagram />
           <WeightDisplay value={getDisplayValue(weights.pilot)} unit={unitLabel} className="top-[32%] left-[24%]" />
           <WeightDisplay value={getDisplayValue(weights.coPilot)} unit={unitLabel} className="top-[32%] right-[24%]" />
           <WeightDisplay value={getDisplayValue(weights.rearSeats)} unit={unitLabel} className="top-[49%] left-1/2" />
