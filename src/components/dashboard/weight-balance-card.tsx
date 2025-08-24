@@ -15,7 +15,6 @@ import { useToast } from '@/hooks/use-toast';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
-import Image from 'next/image';
 
 type Weights = {
   pilot: number;
@@ -231,25 +230,6 @@ export default function WeightBalanceCard({ onUpdate }: WeightBalanceCardProps) 
         <CardDescription>Enter weights for each station to calculate total weight and center of gravity.</CardDescription>
       </CardHeader>
       <CardContent className="space-y-4">
-        {/* Visualizer */}
-        <div className="relative w-full max-w-xs mx-auto aspect-[269/226]">
-           <Image
-            src="https://storage.googleapis.com/stedi-studio-files-public/cessna-182t-top-down.png"
-            alt="Cessna 182T top-down diagram"
-            data-ai-hint="airplane diagram"
-            layout="fill"
-            objectFit="contain"
-          />
-          <WeightDisplay value={getDisplayValue(weights.pilot)} unit={unitLabel} className="top-[28%] left-[30%]" />
-          <WeightDisplay value={getDisplayValue(weights.coPilot)} unit={unitLabel} className="top-[28%] right-[30%]" />
-          <WeightDisplay value={getDisplayValue(weights.rearSeats)} unit={unitLabel} className="top-[45%] left-1/2" />
-          <WeightDisplay value={getDisplayValue(Number(fuelGal))} unit="gal" className="top-[35%] left-[10%]" />
-          <WeightDisplay value={getDisplayValue(Number(fuelGal))} unit="gal" className="top-[35%] right-[10%]" />
-          <WeightDisplay value={getDisplayValue(weights.baggageA)} unit={unitLabel} className="top-[60%] left-1/2" />
-          <WeightDisplay value={getDisplayValue(weights.baggageB)} unit={unitLabel} className="top-[70%] left-1/2" />
-          <WeightDisplay value={getDisplayValue(weights.baggageC)} unit={unitLabel} className="top-[80%] left-1/2" />
-        </div>
-
         {/* Inputs */}
         <WeightInput icon={User} label={STATIONS.pilot.label} value={getDisplayValue(weights.pilot)} onChange={e => handleWeightChange('pilot', e.target.value)} unit={unitLabel} />
         <WeightInput icon={User} label={STATIONS.coPilot.label} value={getDisplayValue(weights.coPilot)} onChange={e => handleWeightChange('coPilot', e.target.value)} unit={unitLabel} />
@@ -343,17 +323,6 @@ export default function WeightBalanceCard({ onUpdate }: WeightBalanceCardProps) 
     </Card>
   );
 }
-
-// Sub-component for overlaying weight on the image
-function WeightDisplay({ value, unit, className }: { value: string; unit: string; className?: string }) {
-  if (!value || Number(value) === 0) return null;
-  return (
-    <div className={`absolute -translate-x-1/2 transform bg-background/80 text-foreground text-xs font-bold px-1.5 py-0.5 rounded-md backdrop-blur-sm ${className}`}>
-      {value} {unit}
-    </div>
-  );
-}
-
 
 // Sub-component for inputs
 function WeightInput({ icon: Icon, label, value, onChange, unit, max }: { icon: React.ElementType, label: string, value: string, onChange: (e: React.ChangeEvent<HTMLInputElement>) => void, unit: string, max?: number }) {
