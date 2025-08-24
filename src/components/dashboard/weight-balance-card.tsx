@@ -222,7 +222,7 @@ export default function WeightBalanceCard({ onUpdate }: WeightBalanceCardProps) 
     <Card className="h-full">
       <CardHeader>
         <div className="flex justify-between items-center">
-          <CardTitle>Weight & Balance</CardTitle>
+          <CardTitle>Weight &amp; Balance</CardTitle>
           <div className="flex items-center space-x-2">
             <Label htmlFor="unit-switch">KG</Label>
             <Switch id="unit-switch" checked={isKg} onCheckedChange={setIsKg} />
@@ -243,12 +243,12 @@ export default function WeightBalanceCard({ onUpdate }: WeightBalanceCardProps) 
           />
           <WeightDisplay value={getDisplayValue(weights.pilot)} unit={unitLabel} className="top-[32%] left-[24%]" />
           <WeightDisplay value={getDisplayValue(weights.coPilot)} unit={unitLabel} className="top-[32%] right-[24%]" />
-          <WeightDisplay value={getDisplayValue(weights.rearSeats)} unit={unitLabel} className="top-[49%] left-1/2 -translate-x-1/2" />
+          <WeightDisplay value={getDisplayValue(weights.rearSeats)} unit={unitLabel} className="top-[49%] left-1/2" />
           <WeightDisplay value={getDisplayValue(Number(fuelGal))} unit="gal" className="top-[42%] left-[10%]" />
           <WeightDisplay value={getDisplayValue(Number(fuelGal))} unit="gal" className="top-[42%] right-[10%]" />
-          <WeightDisplay value={getDisplayValue(weights.baggageA)} unit={unitLabel} className="top-[64%] left-1/2 -translate-x-1/2" />
-          <WeightDisplay value={getDisplayValue(weights.baggageB)} unit={unitLabel} className="top-[73%] left-1/2 -translate-x-1/2" />
-          <WeightDisplay value={getDisplayValue(weights.baggageC)} unit={unitLabel} className="top-[82%] left-1/2 -translate-x-1/2" />
+          <WeightDisplay value={getDisplayValue(weights.baggageA)} unit={unitLabel} className="top-[64%] left-1/2" />
+          <WeightDisplay value={getDisplayValue(weights.baggageB)} unit={unitLabel} className="top-[73%] left-1/2" />
+          <WeightDisplay value={getDisplayValue(weights.baggageC)} unit={unitLabel} className="top-[82%] left-1/2" />
         </div>
 
         {/* Inputs */}
@@ -349,7 +349,7 @@ export default function WeightBalanceCard({ onUpdate }: WeightBalanceCardProps) 
 function WeightDisplay({ value, unit, className }: { value: string; unit: string; className?: string }) {
   if (!value || Number(value) === 0) return null;
   return (
-    <div className={`absolute -translate-x-1/2 bg-background/80 text-foreground text-xs font-bold px-1.5 py-0.5 rounded-md backdrop-blur-sm ${className}`}>
+    <div className={`absolute -translate-x-1/2 transform bg-background/80 text-foreground text-xs font-bold px-1.5 py-0.5 rounded-md backdrop-blur-sm ${className}`}>
       {value} {unit}
     </div>
   );
