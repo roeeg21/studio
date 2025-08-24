@@ -15,6 +15,7 @@ import { useToast } from '@/hooks/use-toast';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
+import Image from 'next/image';
 
 type Weights = {
   pilot: number;
@@ -67,53 +68,6 @@ const isCgWithinEnvelope = (weight: number, cg: number): boolean => {
 
   return cg >= forwardLimit;
 };
-
-const CessnaDiagram = () => (
-  <svg
-    xmlns="http://www.w3.org/2000/svg"
-    viewBox="0 0 300 300"
-    className="w-full h-auto rounded-md bg-muted"
-    aria-labelledby="cessnaTitle cessnaDesc"
-  >
-    <title id="cessnaTitle">Cessna 182T Top-Down Diagram</title>
-    <desc id="cessnaDesc">A line drawing of a Cessna 182T aircraft from a top-down perspective, matching the user's reference image.</desc>
-    <g stroke="hsl(var(--foreground))" strokeWidth="1.5" fill="hsl(var(--card))">
-      {/* Fuselage */}
-      <path d="M150 20
-               Q 140 25, 132 40
-               L 128 100
-               L 130 180
-               C 130 220, 135 240, 140 260
-               L 142 285
-               L 158 285
-               L 160 260
-               C 165 240, 170 220, 170 180
-               L 172 100
-               L 168 40
-               Q 160 25, 150 20 Z" />
-      
-      {/* Cockpit Windows */}
-      <path d="M 134 50 C 138 70, 162 70, 166 50 L 168 45 L 132 45 Z" fill="hsl(var(--muted-foreground))" fillOpacity="0.3" stroke="none" />
-      <path d="M 129 105 L 129 125 L 171 125 L 171 105 Z" fill="hsl(var(--muted-foreground))" fillOpacity="0.3" stroke="none" />
-
-      {/* Wings */}
-      <path d="M 40 90 L 128 90 L 128 105 L 45 105 Q 40 105, 40 100 Z" />
-      <path d="M 172 90 L 260 90 Q 265 90, 265 95 L 255 105 L 172 105 Z" />
-      
-      {/* Fuel Caps */}
-      <circle cx="100" cy="98" r="4" fill="none" strokeWidth="1" />
-      <circle cx="200" cy="98" r="4" fill="none" strokeWidth="1" />
-
-      {/* Tail Assembly (Empennage) */}
-      <path d="M 115 265 L 185 265 L 188 275 L 112 275 Z" />
-      <path d="M 150 250 L 150 285 L 145 292 L 155 292 L 150 285 Z" />
-      
-      {/* Propeller */}
-      <path d="M 150 20 L 150 10" />
-      <path d="M 150 20 C 144 14, 156 14, 150 20 Z" fill="hsl(var(--foreground))" />
-    </g>
-  </svg>
-);
 
 
 export default function WeightBalanceCard({ onUpdate }: WeightBalanceCardProps) {
@@ -278,13 +232,19 @@ export default function WeightBalanceCard({ onUpdate }: WeightBalanceCardProps) 
       </CardHeader>
       <CardContent className="space-y-4">
         {/* Visualizer */}
-        <div className="relative w-full max-w-sm mx-auto">
-          <CessnaDiagram />
-          <WeightDisplay value={getDisplayValue(weights.pilot)} unit={unitLabel} className="top-[25%] left-[30%]" />
-          <WeightDisplay value={getDisplayValue(weights.coPilot)} unit={unitLabel} className="top-[25%] right-[30%]" />
+        <div className="relative w-full max-w-xs mx-auto aspect-[269/226]">
+           <Image
+            src="https://storage.googleapis.com/stedi-studio-files-public/cessna-182t-top-down.png"
+            alt="Cessna 182T top-down diagram"
+            data-ai-hint="airplane diagram"
+            layout="fill"
+            objectFit="contain"
+          />
+          <WeightDisplay value={getDisplayValue(weights.pilot)} unit={unitLabel} className="top-[28%] left-[30%]" />
+          <WeightDisplay value={getDisplayValue(weights.coPilot)} unit={unitLabel} className="top-[28%] right-[30%]" />
           <WeightDisplay value={getDisplayValue(weights.rearSeats)} unit={unitLabel} className="top-[45%] left-1/2" />
-          <WeightDisplay value={getDisplayValue(Number(fuelGal))} unit="gal" className="top-[32%] left-[12%]" />
-          <WeightDisplay value={getDisplayValue(Number(fuelGal))} unit="gal" className="top-[32%] right-[12%]" />
+          <WeightDisplay value={getDisplayValue(Number(fuelGal))} unit="gal" className="top-[35%] left-[10%]" />
+          <WeightDisplay value={getDisplayValue(Number(fuelGal))} unit="gal" className="top-[35%] right-[10%]" />
           <WeightDisplay value={getDisplayValue(weights.baggageA)} unit={unitLabel} className="top-[60%] left-1/2" />
           <WeightDisplay value={getDisplayValue(weights.baggageB)} unit={unitLabel} className="top-[70%] left-1/2" />
           <WeightDisplay value={getDisplayValue(weights.baggageC)} unit={unitLabel} className="top-[80%] left-1/2" />
