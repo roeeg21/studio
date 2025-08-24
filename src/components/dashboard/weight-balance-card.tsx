@@ -69,65 +69,50 @@ const isCgWithinEnvelope = (weight: number, cg: number): boolean => {
 };
 
 const CessnaDiagram = () => (
-    <svg
-      xmlns="http://www.w3.org/2000/svg"
-      viewBox="0 0 300 300"
-      className="w-full h-auto rounded-md bg-muted"
-      aria-labelledby="cessnaTitle cessnaDesc"
-    >
-      <title id="cessnaTitle">Cessna 182T Top-Down Diagram</title>
-      <desc id="cessnaDesc">A line drawing of a Cessna 182T aircraft from a top-down perspective, matching the user's reference image.</desc>
-      <g stroke="hsl(var(--foreground))" strokeWidth="1" fill="hsl(var(--card))">
-        {/* Fuselage */}
-        <path d="M 150,25 
-                 C 145,25 142,30 142,40
-                 L 142,100
-                 L 144,180
-                 C 144,220 148,240 148,260
-                 L 149,285
-                 L 151,285
-                 L 152,260
-                 C 152,240 156,220 156,180
-                 L 158,100
-                 L 158,40
-                 C 158,30 155,25 150,25 Z" />
-        
-        {/* Cockpit Windows */}
-        <path d="M 143,45 C 145,60 155,60 157,45 Z" fill="hsl(var(--muted-foreground))" fillOpacity="0.3" stroke="none" />
-        <path d="M 143,105 L 143,125 L 157,125 L 157,105 Z" fill="hsl(var(--muted-foreground))" fillOpacity="0.3" stroke="none" />
+  <svg
+    xmlns="http://www.w3.org/2000/svg"
+    viewBox="0 0 300 300"
+    className="w-full h-auto rounded-md bg-muted"
+    aria-labelledby="cessnaTitle cessnaDesc"
+  >
+    <title id="cessnaTitle">Cessna 182T Top-Down Diagram</title>
+    <desc id="cessnaDesc">A line drawing of a Cessna 182T aircraft from a top-down perspective, matching the user's reference image.</desc>
+    <g stroke="hsl(var(--foreground))" strokeWidth="1.5" fill="hsl(var(--card))">
+      {/* Fuselage */}
+      <path d="M150 20
+               Q 140 25, 132 40
+               L 128 100
+               L 130 180
+               C 130 220, 135 240, 140 260
+               L 142 285
+               L 158 285
+               L 160 260
+               C 165 240, 170 220, 170 180
+               L 172 100
+               L 168 40
+               Q 160 25, 150 20 Z" />
+      
+      {/* Cockpit Windows */}
+      <path d="M 134 50 C 138 70, 162 70, 166 50 L 168 45 L 132 45 Z" fill="hsl(var(--muted-foreground))" fillOpacity="0.3" stroke="none" />
+      <path d="M 129 105 L 129 125 L 171 125 L 171 105 Z" fill="hsl(var(--muted-foreground))" fillOpacity="0.3" stroke="none" />
 
-        {/* Wings */}
-        <path d="M 50,85 
-                 L 142,85 
-                 L 142,105 
-                 L 55,105 
-                 C 52,105 50,103 50,100 Z" />
-        <path d="M 158,85 
-                 L 250,85 
-                 C 253,85 255,87 255,90
-                 L 245,105 
-                 L 158,105 Z" />
-        
-        {/* Fuel Caps */}
-        <circle cx="120" cy="95" r="3" fill="none" strokeWidth="0.5" />
-        <circle cx="180" cy="95" r="3" fill="none" strokeWidth="0.5" />
+      {/* Wings */}
+      <path d="M 40 90 L 128 90 L 128 105 L 45 105 Q 40 105, 40 100 Z" />
+      <path d="M 172 90 L 260 90 Q 265 90, 265 95 L 255 105 L 172 105 Z" />
+      
+      {/* Fuel Caps */}
+      <circle cx="100" cy="98" r="4" fill="none" strokeWidth="1" />
+      <circle cx="200" cy="98" r="4" fill="none" strokeWidth="1" />
 
-        {/* Tail Assembly (Empennage) */}
-        <path d="M 120,265 
-                 L 180,265
-                 L 182,275
-                 L 118,275 Z" />
-        <path d="M 150,260 
-                 L 150,285 
-                 L 148,290 
-                 L 152,290 
-                 L 150,285 Z" />
-        <path d="M 150,25 L 150,15" />
-
-        {/* Propeller Spinner */}
-        <path d="M 150,25 C 146,20 154,20 150,25 Z" fill="hsl(var(--foreground))" />
-      </g>
-    </svg>
+      {/* Tail Assembly (Empennage) */}
+      <path d="M 115 265 L 185 265 L 188 275 L 112 275 Z" />
+      <path d="M 150 250 L 150 285 L 145 292 L 155 292 L 150 285 Z" />
+      
+      {/* Propeller */}
+      <path d="M 150 20 L 150 10" />
+      <path d="M 150 20 C 144 14, 156 14, 150 20 Z" fill="hsl(var(--foreground))" />
+    </g>
+  </svg>
 );
 
 
