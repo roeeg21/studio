@@ -31,7 +31,7 @@ export default function DashboardClient() {
   const [wbReport, setWbReport] = useState<WeightAndBalanceReport>(initialWbReport);
 
   return (
-    <div className="grid gap-4 md:grid-cols-2 md:gap-8 lg:grid-cols-3">
+    <div className="grid grid-cols-1 gap-4 md:grid-cols-2 md:gap-8 lg:grid-cols-3">
       <div className="lg:col-span-1">
         <WeightBalanceCard onUpdate={setWbReport} />
       </div>
@@ -45,9 +45,7 @@ export default function DashboardClient() {
             isWithinLimits={wbReport.isWithinLimits}
           />
         </div>
-        <div className="grid gap-4 md:grid-cols-2 md:gap-8">
-          <AeroDataCard />
-        </div>
+        <AeroDataCard />
       </div>
     </div>
   );

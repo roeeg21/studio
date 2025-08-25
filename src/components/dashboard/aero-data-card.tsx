@@ -136,7 +136,7 @@ function WeatherInfo({ airportId, airport }: { airportId: string; airport: Airpo
 
 function WeatherTranslationDisplay({ weather }: { weather: TranslatedWeather }) {
   return (
-    <div className="grid grid-cols-2 gap-x-4 gap-y-2 text-sm pt-2 border-t">
+    <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-4 gap-y-2 text-sm pt-2 border-t">
        <div className="flex items-center gap-2"><Wind className="h-4 w-4 text-muted-foreground"/> <span>{weather.wind}</span></div>
        <div className="flex items-center gap-2"><Eye className="h-4 w-4 text-muted-foreground"/> <span>{weather.visibility}</span></div>
        <div className="flex items-center gap-2"><Cloud className="h-4 w-4 text-muted-foreground"/> <span>{weather.clouds}</span></div>

@@ -45,7 +45,7 @@ export default function CgEnvelopeChart({ totalWeight, totalCg, zeroFuelWeight, 
       <p className="text-sm text-muted-foreground mb-4">
         The calculated Center of Gravity must be within the safe envelope for takeoff and landing.
       </p>
-      <div className="h-80">
+      <div className="h-80 w-full">
         <ChartContainer config={chartConfig} className="h-full w-full">
           <ComposedChart
             accessibilityLayer
@@ -62,21 +62,23 @@ export default function CgEnvelopeChart({ totalWeight, totalCg, zeroFuelWeight, 
               dataKey="cg"
               type="number"
               domain={domainX}
-              label={{ value: 'CG (in)', position: 'bottom', offset: 10 }}
-              tickCount={15}
+              label={{ value: 'CG (in)', position: 'bottom', offset: 10, fontSize: 12 }}
+              tickCount={8}
               tickFormatter={(value) => value.toString()}
               axisLine={{ stroke: 'hsl(var(--foreground))' }}
               tickLine={{ stroke: 'hsl(var(--foreground))' }}
+              tick={{fontSize: 10}}
             />
             <YAxis
               dataKey="weight"
               type="number"
               domain={domainY}
-              label={{ value: 'Weight (lbs)', angle: -90, position: 'insideLeft', offset: -10 }}
-              tickCount={15}
+              label={{ value: 'Weight (lbs)', angle: -90, position: 'insideLeft', offset: -10, fontSize: 12 }}
+              tickCount={8}
               tickFormatter={(value) => value.toString()}
               axisLine={{ stroke: 'hsl(var(--foreground))' }}
               tickLine={{ stroke: 'hsl(var(--foreground))' }}
+               tick={{fontSize: 10}}
             />
             <ChartTooltip cursor={false} content={<ChartTooltipContent indicator="line" labelKey="weight" />} />
             
